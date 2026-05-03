@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+lib/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+
+# Foundry / Smart Contracts
+cache/
+out/
+artifacts/
+broadcast/
+sepolia_deploy.log
+
+# Noir / ZK
+target/
+Prover.toml
+Verifier.toml
+*.proof
+witness.gz
+
+# Backend
+backend/market_data.json
+backend/*.log
+backend/zk_kyc/target/
+backend/zk_kyc/Prover.toml
+backend/zk_kyc/witness.gz
+
+# Environment Variables (IMPORTANT)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.example
+
+# Misc
+.DS_Store
+Thumbs.db
+*.swp
+*.bak

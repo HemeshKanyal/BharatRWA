@@ -1,0 +1,498 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.12.110.29:3000
+✓ Ready in 419ms
+
+○ Compiling / ...
+ GET /admin 200 in 7.7s (next.js: 6.8s, application-code: 908ms)
+ GET / 200 in 7.7s (next.js: 6.9s, application-code: 797ms)
+ GET / 200 in 7.8s (next.js: 7.0s, application-code: 743ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changCompaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+rc/app/admin/page.js [Client Component SSR]
+    ./src/app/admin/page.js [Server Component] 
+[browser] Uncaught Error: ./src/app/admin/page.js:385:17
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  383 |                   </td>
+  384 |                 </tr>
+> 385 |               ))}
+      |                 ^
+  386 |             </tbody>
+  387 |           </table>
+  388 |         )}
+
+Parsing ecmascript source code failed
+
+Generated code of loaders [next/dist/build/babel/loader] transform of file content of src/app/admin/page.js:
+./src/app/admin/page.js:385:17
+  383 |                   </td>
+  384 |                 </tr>
+> 385 |               ))}
+      |                 ^
+  386 |             </tbody>
+  387 |           </table>
+  388 |         )}
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.js [Client Component Browser]
+    ./src/app/admin/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.js [Client Component SSR]
+    ./src/app/admin/page.js [Server Component]
+
+
+    at <unknown> (Error: ./src/app/admin/page.js:385:17)
+    at <unknown> (./src/app/admin/page.js:385:17)
+    at <unknown> (Error: (./src/app/admin/page.js:385:17)
+    at <unknown> (./src/app/admin/page.js:385:17)
+[browser] ./src/app/admin/page.js:385:17
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  383 |                   </td>
+  384 |                 </tr>
+> 385 |               ))}
+      |                 ^
+  386 |             </tbody>
+  387 |           </table>
+  388 |         )}
+
+Parsing ecmascript source code failed
+
+Generated code of loaders [next/dist/build/babel/loader] transform of file content of src/app/admin/page.js:
+./src/app/admin/page.js:385:17
+  383 |                   </td>
+  384 |                 </tr>
+> 385 |               ))}
+      |                 ^
+  386 |             </tbody>
+  387 |           </table>
+  388 |         )}
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.js [Client Component Browser]
+    ./src/app/admin/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.js [Client Component SSR]
+    ./src/app/admin/page.js [Server Component] 
+[browser] ./src/app/admin/page.js:385:17
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  383 |                   </td>
+  384 |                 </tr>
+> 385 |               ))}
+      |                 ^
+  386 |             </tbody>
+  387 |           </table>
+  388 |         )}
+
+Parsing ecmascript source code failed
+
+Generated code of loaders [next/dist/build/babel/loader] transform of file content of src/app/admin/page.js:
+./src/app/admin/page.js:385:17
+  383 |                   </td>
+  384 |                 </tr>
+> 385 |               ))}
+      |                 ^
+  386 |             </tbody>
+  387 |           </table>
+  388 |         )}
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.js [Client Component Browser]
+    ./src/app/admin/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.js [Client Component SSR]
+    ./src/app/admin/page.js [Server Component] 
+[browser] ./src/app/admin/page.js:385:17
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  383 |                   </td>
+  384 |                 </tr>
+> 385 |               ))}
+      |                 ^
+  386 |             </tbody>
+  387 |           </table>
+  388 |         )}
+
+Parsing ecmascript source code failed
+
+Generated code of loaders [next/dist/build/babel/loader] transform of file content of src/app/admin/page.js:
+./src/app/admin/page.js:385:17
+  383 |                   </td>
+  384 |                 </tr>
+> 385 |               ))}
+      |                 ^
+  386 |             </tbody>
+  387 |           </table>
+  388 |         )}
+
+Import traces:
+  Client Component Browser:
+    ./src/app/admin/page.js [Client Component Browser]
+    ./src/app/admin/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/admin/page.js [Client Component SSR]
+    ./src/app/admin/page.js [Server Component] 
+✓ Compiled in 219ms
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET / 200 in 89ms (next.js: 1952µs, application-code: 87ms)
+ GET /admin 200 in 125ms (next.js: 6ms, application-code: 119ms)
+ GET / 200 in 73ms (next.js: 1540µs, application-code: 71ms)
+ GET /admin 200 in 60ms (next.js: 3ms, application-code: 57ms)
+[browser] Failed to fetch assets: ReferenceError: BACKEND_URL is not defined
+    at AdminPage.useEffect.fetchAssets (src/app/admin/page.js:80:36)
+    at AdminPage.useEffect (src/app/admin/page.js:90:5)
+  78 |       try {
+  79 |         setLoadingAssets(true);
+> 80 |         const res = await fetch(`${BACKEND_URL}/api/assets`);
+     |                                    ^
+  81 |         if (!res.ok) throw new Error("Failed to fetch assets");
+  82 |         const data = await res.json();
+  83 |         setRegisteredAssets(data); (src/app/admin/page.js:85:17)
+ GET /admin 200 in 61ms (next.js: 3ms, application-code: 58ms)
+[browser] Failed to fetch assets: ReferenceError: BACKEND_URL is not defined
+    at AdminPage.useEffect.fetchAssets (src/app/admin/page.js:80:36)
+    at AdminPage.useEffect (src/app/admin/page.js:90:5)
+  78 |       try {
+  79 |         setLoadingAssets(true);
+> 80 |         const res = await fetch(`${BACKEND_URL}/api/assets`);
+     |                                    ^
+  81 |         if (!res.ok) throw new Error("Failed to fetch assets");
+  82 |         const data = await res.json();
+  83 |         setRegisteredAssets(data); (src/app/admin/page.js:85:17)
+✓ Compiled in 255ms
+ GET /marketplace 200 in 1044ms (next.js: 944ms, application-code: 100ms)
+ GET /admin 200 in 81ms (next.js: 12ms, application-code: 69ms)
+ GET /dashboard 200 in 52ms (next.js: 10ms, application-code: 41ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /marketplace 200 in 83ms (next.js: 5ms, application-code: 78ms)
+ GET /admin 200 in 48ms (next.js: 10ms, application-code: 39ms)
+[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'substring')
+    at <unknown> (src/app/admin/page.js:371:40)
+    at Array.map (<anonymous>)
+    at AdminPage (src/app/admin/page.js:356:33)
+  369 |                   <td>
+  370 |                     <a href={`https://sepolia.etherscan.io/address/${a.tokenContract}`} t...
+> 371 |                       {a.tokenContract.substring(0, 8)}...{a.tokenContract.substring(36)}
+      |                                        ^
+  372 |                     </a>
+  373 |                   </td>
+  374 |                   <td><span className={`badge ${a.isActive ? "badge-active" : "badge-inac...
+ GET /admin 200 in 50ms (next.js: 2ms, application-code: 48ms)
+[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'substring')
+    at <unknown> (src/app/admin/page.js:371:40)
+    at Array.map (<anonymous>)
+    at AdminPage (src/app/admin/page.js:356:33)
+  369 |                   <td>
+  370 |                     <a href={`https://sepolia.etherscan.io/address/${a.tokenContract}`} t...
+> 371 |                       {a.tokenContract.substring(0, 8)}...{a.tokenContract.substring(36)}
+      |                                        ^
+  372 |                     </a>
+  373 |                   </td>
+  374 |                   <td><span className={`badge ${a.isActive ? "badge-active" : "badge-inac...
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 164ms
+ GET /admin 200 in 58ms (next.js: 5ms, application-code: 53ms)
+ GET /admin 200 in 45ms (next.js: 2ms, application-code: 43ms)
+ GET /admin 200 in 42ms (next.js: 1721µs, application-code: 40ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/admin" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.js">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="en">
+                          <body
++                           className="inter_396b12ce-module__rRjk0G__className playfair_display_3f24b74f-module__88bV..."
+-                           className="inter_396b12ce-module__rRjk0G__className playfair_display_3f24b74f-module__88bV..."
+                          >
+                  ...
+ 
+ GET /marketplace 200 in 44ms (next.js: 4ms, application-code: 40ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /dashboard 200 in 27ms (next.js: 8ms, application-code: 19ms)
+ GET /trade/1 200 in 1901ms (next.js: 1852ms, application-code: 49ms)
+ GET /marketplace 200 in 44ms (next.js: 4ms, application-code: 39ms)
+ GET /marketplace 200 in 97ms (next.js: 3ms, application-code: 94ms)
+ GET /admin 200 in 59ms (next.js: 3ms, application-code: 56ms)
+ GET /marketplace 200 in 54ms (next.js: 2ms, application-code: 52ms)
+ GET / 200 in 53ms (next.js: 3ms, application-code: 50ms)
+ GET /admin 200 in 82ms (next.js: 4ms, application-code: 78ms)
+ GET /admin 200 in 93ms (next.js: 5ms, application-code: 88ms)
+ GET /admin 200 in 69ms (next.js: 2ms, application-code: 67ms)
+ GET /marketplace 200 in 94ms (next.js: 4ms, application-code: 90ms)
+ GET /admin 200 in 69ms (next.js: 3ms, application-code: 65ms)
+ GET /marketplace 200 in 61ms (next.js: 2ms, application-code: 59ms)
+ GET /marketplace 200 in 170ms (next.js: 7ms, application-code: 163ms)
+ GET /admin 200 in 99ms (next.js: 6ms, application-code: 94ms)
+ GET /marketplace 200 in 84ms (next.js: 9ms, application-code: 75ms)
+ GET /admin 200 in 66ms (next.js: 3ms, application-code: 64ms)
+ GET /marketplace 200 in 27ms (next.js: 3ms, application-code: 24ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /admin/assets 404 in 861ms (next.js: 767ms, application-code: 95ms)
+✓ Compiled in 304ms
+✓ Compiled in 36ms
+✓ Compiled in 192ms
+ GET /marketplace 200 in 59ms (next.js: 13ms, application-code: 47ms)
+ GET /marketplace 200 in 74ms (next.js: 7ms, application-code: 67ms)
+ GET /admin 200 in 75ms (next.js: 11ms, application-code: 64ms)
+ GET /marketplace 200 in 55ms (next.js: 2ms, application-code: 53ms)
+ GET /marketplace 200 in 73ms (next.js: 4ms, application-code: 70ms)
+ GET /marketplace 200 in 63ms (next.js: 4ms, application-code: 60ms)
+ GET /admin 200 in 26ms (next.js: 3ms, application-code: 23ms)
+ GET /admin 200 in 65ms (next.js: 2ms, application-code: 63ms)
+ GET /marketplace 200 in 28ms (next.js: 3ms, application-code: 25ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /marketplace 200 in 27ms (next.js: 3ms, application-code: 24ms)
+ GET /marketplace 200 in 72ms (next.js: 3ms, application-code: 70ms)
+ GET /marketplace 200 in 167ms (next.js: 4ms, application-code: 163ms)
+[browser] Failed to fetch assets: TypeError: Failed to fetch
+    at MarketplacePage.useEffect.fetchAssets (src/app/marketplace/page.js:61:27)
+  59 |       try {
+  60 |         setLoadingAssets(true);
+> 61 |         const res = await fetch(`${BACKEND_URL}/api/assets`);
+     |                           ^
+  62 |         if (!res.ok) throw new Error("Failed to fetch assets");
+  63 |         const data = await res.json();
+  64 |          (src/app/marketplace/page.js:73:17)
+[browser] Failed to fetch assets: TypeError: Failed to fetch
+    at MarketplacePage.useEffect.fetchAssets (src/app/marketplace/page.js:61:27)
+  59 |       try {
+  60 |         setLoadingAssets(true);
+> 61 |         const res = await fetch(`${BACKEND_URL}/api/assets`);
+     |                           ^
+  62 |         if (!res.ok) throw new Error("Failed to fetch assets");
+  63 |         const data = await res.json();
+  64 |          (src/app/marketplace/page.js:73:17)
+[browser] Failed to fetch assets: TypeError: Failed to fetch
+    at MarketplacePage.useEffect.fetchAssets (src/app/marketplace/page.js:61:27)
+  59 |       try {
+  60 |         setLoadingAssets(true);
+> 61 |         const res = await fetch(`${BACKEND_URL}/api/assets`);
+     |                           ^
+  62 |         if (!res.ok) throw new Error("Failed to fetch assets");
+  63 |         const data = await res.json();
+  64 |          (src/app/marketplace/page.js:73:17)
+ GET /marketplace 200 in 47ms (next.js: 2ms, application-code: 44ms)
+ GET /admin 200 in 79ms (next.js: 10ms, application-code: 69ms)
+ GET /marketplace 200 in 63ms (next.js: 2ms, application-code: 61ms)
+ GET /trade/17 200 in 90ms (next.js: 68ms, application-code: 22ms)
+ GET /marketplace 200 in 15ms (next.js: 1849µs, application-code: 13ms)
+ GET /trade/16 200 in 71ms (next.js: 52ms, application-code: 20ms)
+ GET /marketplace 200 in 17ms (next.js: 1810µs, application-code: 16ms)
+ GET /trade/14 200 in 71ms (next.js: 52ms, application-code: 19ms)
+ GET /dashboard 200 in 24ms (next.js: 7ms, application-code: 17ms)
+ GET /marketplace 200 in 15ms (next.js: 1775µs, application-code: 13ms)
+ GET / 200 in 37ms (next.js: 2ms, application-code: 35ms)
+ GET /marketplace 200 in 16ms (next.js: 1983µs, application-code: 14ms)
+✓ Compiled in 31ms
+ GET /dashboard 200 in 22ms (next.js: 2ms, application-code: 20ms)
+ GET / 200 in 36ms (next.js: 1943µs, application-code: 34ms)
+✓ Compiled in 34ms
+ GET / 200 in 73ms (next.js: 3ms, application-code: 70ms)
+✓ Compiled in 37ms
+✓ Compiled in 43ms
+ GET /marketplace 200 in 117ms (next.js: 3ms, application-code: 114ms)
+ GET / 200 in 117ms (next.js: 66ms, application-code: 52ms)
+ GET /marketplace 200 in 19ms (next.js: 1557µs, application-code: 18ms)
+ GET /admin 200 in 15ms (next.js: 2ms, application-code: 12ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET / 200 in 211ms (next.js: 3ms, application-code: 208ms)
+ GET /marketplace 200 in 18ms (next.js: 2ms, application-code: 16ms)
+ GET / 200 in 37ms (next.js: 2ms, application-code: 35ms)
+ GET / 200 in 30ms (next.js: 1679µs, application-code: 28ms)

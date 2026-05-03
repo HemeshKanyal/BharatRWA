@@ -1,0 +1,6 @@
+[package]
+name = "zk_kyc"
+type = "bin"
+authors = [""]
+
+[dependencies]
