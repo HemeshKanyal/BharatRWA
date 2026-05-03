@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useWallet } from './WalletProvider';
+import { BACKEND_URL } from '@/config';
 
 export const KycModal = ({ isOpen, onClose, onVerified }) => {
   const { address } = useWallet();
@@ -18,7 +19,7 @@ export const KycModal = ({ isOpen, onClose, onVerified }) => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3008/generate-proof', {
+      const response = await fetch(`${BACKEND_URL}/generate-proof`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

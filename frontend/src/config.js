@@ -7,4 +7,4 @@ export const CONTRACTS = {
   ZK_VERIFIER: "0x8F4Fd9427aB0E7C15386C8ac6007091f06A9A183",
 };
 
-export const BACKEND_URL = "http://localhost:3008";
+export const BACKEND_URL = "https://hemeshkanyal-bharatrwa.hf.space";
