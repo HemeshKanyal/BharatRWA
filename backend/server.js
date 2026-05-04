@@ -121,67 +121,82 @@ function recordTrade(assetId, side, price, amount, walletAddr, txHash) {
   save();
 }
 
+// ========== ASSET SYNC ==========
+async function fetchAssetFromChain(aid) {
+  try {
+    const reg = new ethers.Contract(ADDRS.REGISTRY, REG_ABI, provider);
+    const ora = new ethers.Contract(ADDRS.ORACLE, ORA_ABI, provider);
+    
+    const a = await reg.getAsset(aid);
+    const tok = new ethers.Contract(a.tokenContract, TOK_ABI, provider);
+    const sym = await tok.symbol();
+    const name = await tok.name();
+
+    // Get oracle price → convert to ETH (assuming $3000/ETH as fallback)
+    let basePrice = 0.0001;
+    const symUp = sym.toUpperCase();
+    
+    try {
+      if (['PAXG', 'GOLD'].includes(symUp)) {
+         const paxUsd = await fetchBinancePrice('PAXGUSDT');
+         const ethUsd = await fetchBinancePrice('ETHUSDT');
+         if (paxUsd && ethUsd) basePrice = paxUsd / ethUsd;
+      } else if (['BTC'].includes(symUp)) {
+         const btcUsd = await fetchBinancePrice('BTCUSDT');
+         const ethUsd = await fetchBinancePrice('ETHUSDT');
+         if (btcUsd && ethUsd) basePrice = btcUsd / ethUsd;
+      } else if (['SLVR', 'SILVER'].includes(symUp)) {
+         const slvUsd = await fetchCoinGeckoPrice('kinesis-silver');
+         const ethUsd = await fetchBinancePrice('ETHUSDT');
+         if (slvUsd && ethUsd) basePrice = slvUsd / ethUsd;
+      } else {
+         const pd = await ora.getLatestPrice(aid);
+         const usd = Number(pd.price) / Math.pow(10, Number(pd.decimals));
+         basePrice = Math.max(0.00001, usd / 3000);
+      }
+    } catch (err) {
+      console.warn(`    Price sync failed for #${aid}, using fallback.`, err.message);
+    }
+
+    const saved = load();
+    if (saved && saved[aid] && saved[aid].candles && saved[aid].candles.length > 10) {
+      market[aid] = {
+        ...saved[aid],
+        isActive: a.isActive,
+        totalSupply: ethers.formatEther(a.totalSupply),
+        tokenAddress: a.tokenContract,
+        name, symbol: sym
+      };
+    } else {
+      const { candles, lastPrice } = genCandles(basePrice);
+      market[aid] = {
+        tokenAddress: a.tokenContract,
+        name, symbol: sym,
+        totalSupply: ethers.formatEther(a.totalSupply),
+        isActive: a.isActive,
+        currentPrice: +lastPrice.toFixed(8),
+        candles, trades: [],
+      };
+    }
+    console.log(`  Synced Asset #${aid}: ${sym} @ ${market[aid].currentPrice} ETH`);
+    save();
+    return market[aid];
+  } catch (e) {
+    console.error(`  Failed to sync asset #${aid}:`, e.message);
+    return null;
+  }
+}
+
 // ========== INIT ==========
 async function init() {
   console.log('Initializing market data...');
-  const saved = load();
   const reg = new ethers.Contract(ADDRS.REGISTRY, REG_ABI, provider);
-  const ora = new ethers.Contract(ADDRS.ORACLE, ORA_ABI, provider);
 
   let ids;
   try { ids = await reg.getAllAssetIds(); } catch { ids = []; }
 
   for (const id of ids) {
-    const aid = Number(id);
-    try {
-      const a = await reg.getAsset(id);
-      const tok = new ethers.Contract(a.tokenContract, TOK_ABI, provider);
-      const sym = await tok.symbol();
-      const name = await tok.name();
-
-      // Get oracle price → convert to ETH (assuming $3000/ETH as fallback)
-      let basePrice = 0.0001;
-      
-      // Override with external APIs for 24/7 assets
-      const symUp = sym.toUpperCase();
-      try {
-        if (['PAXG', 'GOLD'].includes(symUp)) {
-           const paxUsd = await fetchBinancePrice('PAXGUSDT');
-           const ethUsd = await fetchBinancePrice('ETHUSDT');
-           if (paxUsd && ethUsd) basePrice = paxUsd / ethUsd;
-        } else if (['BTC'].includes(symUp)) {
-           const btcUsd = await fetchBinancePrice('BTCUSDT');
-           const ethUsd = await fetchBinancePrice('ETHUSDT');
-           if (btcUsd && ethUsd) basePrice = btcUsd / ethUsd;
-        } else if (['SLVR', 'SILVER'].includes(symUp)) {
-           const slvUsd = await fetchCoinGeckoPrice('kinesis-silver');
-           const ethUsd = await fetchBinancePrice('ETHUSDT');
-           if (slvUsd && ethUsd) basePrice = slvUsd / ethUsd;
-        } else {
-           const pd = await ora.getLatestPrice(aid);
-           const usd = Number(pd.price) / Math.pow(10, Number(pd.decimals));
-           basePrice = Math.max(0.00001, usd / 3000);
-        }
-      } catch {}
-
-      if (saved && saved[aid] && saved[aid].candles.length > 10) {
-        market[aid] = saved[aid];
-        market[aid].isActive = a.isActive; // always update active status
-      } else {
-        const { candles, lastPrice } = genCandles(basePrice);
-        market[aid] = {
-          tokenAddress: a.tokenContract,
-          name, symbol: sym,
-          totalSupply: ethers.formatEther(a.totalSupply),
-          isActive: a.isActive,
-          currentPrice: +lastPrice.toFixed(8),
-          candles, trades: [],
-        };
-      }
-      console.log(`  Asset #${aid}: ${sym} @ ${market[aid].currentPrice} ETH`);
-    } catch (e) {
-      console.error(`  Failed asset #${aid}:`, e.message);
-    }
+    await fetchAssetFromChain(Number(id));
   }
 
   // Ensure deployer is KYC-approved for transferFrom
@@ -345,33 +360,57 @@ app.post('/generate-proof', async (req, res) => {
 
 // ========== MARKET API ==========
 app.get('/api/assets', (req, res) => {
-  const assets = Object.entries(market).map(([id, d]) => {
-    const c = d.candles;
-    const price24hAgo = c.length > 96 ? c[c.length - 96].close : c[0]?.open || d.currentPrice;
-    const change24h = ((d.currentPrice - price24hAgo) / price24hAgo * 100);
-    const vol = c.slice(-96).reduce((s, x) => s + x.volume, 0);
-    return {
-      id: +id, name: d.name, symbol: d.symbol, tokenAddress: d.tokenAddress,
-      isActive: d.isActive, totalSupply: d.totalSupply,
-      currentPrice: d.currentPrice, change24h: +change24h.toFixed(2), volume24h: vol,
-      marketCap: +(d.currentPrice * parseFloat(d.totalSupply)).toFixed(4),
-      imageUrl: d.imageUrl || null,
-    };
-  });
+  const assets = Object.entries(market)
+    .filter(([id, d]) => d && d.candles) // Only return fully synced assets
+    .map(([id, d]) => {
+      const c = d.candles || [];
+      const price24hAgo = c.length > 96 ? c[c.length - 96].close : c[0]?.open || d.currentPrice || 0;
+      const currentPrice = d.currentPrice || 0;
+      const change24h = price24hAgo > 0 ? ((currentPrice - price24hAgo) / price24hAgo * 100) : 0;
+      const vol = c.slice(-96).reduce((s, x) => s + (x.volume || 0), 0);
+      return {
+        id: +id, name: d.name || 'Unknown', symbol: d.symbol || '???', tokenAddress: d.tokenAddress,
+        isActive: !!d.isActive, totalSupply: d.totalSupply || "0",
+        currentPrice: currentPrice, change24h: +change24h.toFixed(2), volume24h: vol,
+        marketCap: +(currentPrice * parseFloat(d.totalSupply || 0)).toFixed(4),
+        imageUrl: d.imageUrl || null,
+      };
+    });
   res.json(assets);
 });
 
-app.post('/api/assets/:assetId/metadata', (req, res) => {
+app.post('/api/assets/sync', async (req, res) => {
+  console.log('Manual sync requested...');
+  const reg = new ethers.Contract(ADDRS.REGISTRY, REG_ABI, provider);
+  let ids;
+  try { ids = await reg.getAllAssetIds(); } catch { ids = []; }
+  for (const id of ids) {
+    await fetchAssetFromChain(Number(id));
+  }
+  res.json({ success: true, count: ids.length });
+});
+
+app.post('/api/assets/:assetId/metadata', async (req, res) => {
   const { assetId } = req.params;
   const { imageUrl } = req.body;
-  if (!market[assetId]) {
-    // If not in market yet (just registered), create a placeholder
-    market[assetId] = { imageUrl };
-  } else {
-    market[assetId].imageUrl = imageUrl;
+  
+  console.log(`Updating metadata for asset #${assetId}...`);
+  
+  // First ensure we have the asset data from chain
+  if (!market[assetId] || !market[assetId].candles) {
+    await fetchAssetFromChain(Number(assetId));
   }
-  save();
-  res.json({ success: true, imageUrl });
+  
+  if (market[assetId]) {
+    market[assetId].imageUrl = imageUrl;
+    save();
+    res.json({ success: true, imageUrl });
+  } else {
+    // If sync failed, we still store the image in case it syncs later
+    market[assetId] = { imageUrl };
+    save();
+    res.json({ success: true, imageUrl, warning: 'Asset not yet synced from chain' });
+  }
 });
 
 app.get('/api/market/:assetId', (req, res) => {

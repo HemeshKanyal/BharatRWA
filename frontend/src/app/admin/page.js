@@ -127,7 +127,8 @@ export default function AdminPage() {
       setAssetSupply("");
       setAssetImage("");
 
-      // Refresh assets list
+      // Refresh assets list after a small delay to allow backend to finish syncing
+      await new Promise(r => setTimeout(r, 1500));
       window.location.reload();
     } catch (err) {
       console.error(err);
@@ -205,7 +206,22 @@ export default function AdminPage() {
         a.id === assetId ? { ...a, isActive: !isActive } : a
       ));
     } catch (err) {
-      addToast("❌", "Failed", err.reason || err.message);
+      let errorMessage = err.reason || err.message;
+      
+      // Try to parse custom error
+      if (err.data && AssetRegistryABI.abi) {
+        try {
+          const iface = new ethers.Interface(AssetRegistryABI.abi);
+          const decodedError = iface.parseError(err.data);
+          if (decodedError) {
+            errorMessage = `${decodedError.name}(${decodedError.args.join(", ")})`;
+          }
+        } catch (e) {
+          console.log("Could not parse error data", e);
+        }
+      }
+      
+      addToast("❌", "Failed", errorMessage);
     } finally {
       setIsToggling(prev => ({ ...prev, [assetId]: false }));
     }
