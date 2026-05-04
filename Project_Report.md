@@ -132,4 +132,25 @@ Compared to the high-level overview in `BharatRWA.pdf`, this report and the acco
 The structure of this report has been significantly optimized for clarity and logical flow. By categorizing the project into distinct layers (Protocol, Privacy, Orchestration, and Application), the documentation provides a better mental model than the original PDF. The inclusion of Mermaid diagrams and step-by-step functionality flows ensures a cohesive understanding of the entire ecosystem.
 
 ---
+
+## 9. Future Improvements
+
+To further evolve the BharatRWA platform into a global leader for asset tokenization, the following improvements are planned:
+
+### 9.1 Multi-Chain & Layer-2 Scaling
+While currently deployed on the Sepolia testnet, future versions will target Ethereum Layer-2 solutions (such as Arbitrum, Optimism, or Base) to reduce transaction costs (gas fees) for small-scale investors. Multi-chain support will allow for broader liquidity across different ecosystems.
+
+### 9.2 Decentralized Identity (DID) Integration
+Integration with W3C Decentralized Identifier (DID) standards and Verifiable Credentials (VCs) will allow users to carry their ZK-KYC status across multiple platforms without re-verifying, enhancing the interoperability of the compliance layer.
+
+### 9.3 Secondary Market AMM with KYC Hooks
+Transitioning from a synthetic exchange to a decentralized Automated Market Maker (AMM) using **Uniswap v4 hooks**. This would allow for permissioned liquidity pools where only KYC-verified wallets can provide liquidity or swap tokens, ensuring 100% compliance in secondary market trading.
+
+### 9.4 Automated Asset Valuation (AAV) Oracles
+Implementing more sophisticated oracles that utilize AI and real-time market data for complex assets like Real Estate and Fine Art. This will provide investors with even more accurate and transparent valuation of their fractional holdings.
+
+### 9.5 Yield-Generating RWAs
+Enabling automated distribution of rental income or dividends directly from the physical asset's revenue stream into the token holders' wallets, creating a truly passive income model for real-world investments.
+
+---
 *End of Report*
