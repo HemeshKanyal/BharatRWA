@@ -158,5 +158,28 @@
         <li><strong>Yield-Generating RWAs</strong>: Enabling automated distribution of rental income or dividends directly from the physical asset's revenue stream into the token holders' wallets, creating a truly passive income model for real-world investments.</li>
     </ul>
 
+    <hr>
+    
+    <h2>10. Team & Contributions</h2>
+    <p>The development of BharatRWA was a collaborative effort focusing on different layers of the blockchain stack:</p>
+    
+    <h3>Hemesh Kanyal</h3>
+    <p><strong>Lead Blockchain & ZK Engineer</strong></p>
+    <ul>
+        <li>Designed the core protocol architecture and asset fractionalization logic.</li>
+        <li>Developed the <strong>Noir ZK-Circuits</strong> for privacy-preserving KYC verification.</li>
+        <li>Authored and audited the <strong>Foundry-based smart contracts</strong> (Asset Registry, Compliance Manager).</li>
+        <li>Handled protocol deployment and on-chain verification integration.</li>
+    </ul>
+
+    <h3>Abhishek Rajput</h3>
+    <p><strong>Full-Stack & Integration Engineer</strong></p>
+    <ul>
+        <li>Developed the <strong>Next.js frontend application</strong>, focusing on the real-time trading dashboard and UI/UX.</li>
+        <li>Built the <strong>Node.js/Express backend</strong> orchestration layer and ZK-prover service.</li>
+        <li>Integrated external market data APIs (Binance, CoinGecko) for live asset pricing.</li>
+        <li>Managed the integration between the web interface and the Sepolia testnet contracts.</li>
+    </ul>
+
 </body>
 </html>

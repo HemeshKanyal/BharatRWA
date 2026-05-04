@@ -153,4 +153,24 @@ Implementing more sophisticated oracles that utilize AI and real-time market dat
 Enabling automated distribution of rental income or dividends directly from the physical asset's revenue stream into the token holders' wallets, creating a truly passive income model for real-world investments.
 
 ---
+
+## 10. Team & Contributions
+
+The development of BharatRWA was a collaborative effort focusing on different layers of the blockchain stack:
+
+### Hemesh Kanyal
+**Lead Blockchain & ZK Engineer**
+- Designed the core protocol architecture and asset fractionalization logic.
+- Developed the **Noir ZK-Circuits** for privacy-preserving KYC verification.
+- Authored and audited the **Foundry-based smart contracts** (Asset Registry, Compliance Manager).
+- Handled protocol deployment and on-chain verification integration.
+
+### Abhishek Rajput
+**Full-Stack & Integration Engineer**
+- Developed the **Next.js frontend application**, focusing on the real-time trading dashboard and UI/UX.
+- Built the **Node.js/Express backend** orchestration layer and ZK-prover service.
+- Integrated external market data APIs (Binance, CoinGecko) for live asset pricing.
+- Managed the integration between the web interface and the Sepolia testnet contracts.
+
+---
 *End of Report*
