@@ -42,3 +42,4 @@ backend/zk_kyc/witness.gz
 Thumbs.db
 *.swp
 *.bak
+frontend/*.log

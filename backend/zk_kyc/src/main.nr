@@ -19,7 +19,8 @@ fn main(
     assert(!sanctioned);
 
     // ================= WALLET HASH =================
-    let wallet_hash = pedersen_hash([wallet]);
+    // For the demo, we use the wallet address directly as the public identifier
+    let wallet_hash = wallet;
 
     assert(wallet_hash == expected_wallet_hash);
 

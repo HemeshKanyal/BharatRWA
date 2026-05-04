@@ -1,66 +1,40 @@
-## Foundry
+# BharatRWA Smart Contracts
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+The core protocol logic for BharatRWA, built using the **Foundry** framework.
 
-Foundry consists of:
+## 📜 Contract Overview
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- **`AssetRegistry.sol`**: Manages the lifecycle of Real-World Assets. It stores metadata, custodian information, and links each asset ID to its fractionalized ERC-20 token.
+- **`ComplianceManager.sol`**: A role-based access control system that integrates with ZK-KYC. It allows users to be whitelisted for trading only after presenting a valid ZK-proof.
+- **`BharatRWAToken.sol`**: A flexible ERC-20 implementation for asset fractionalization. Supports minting by authorized custodians and compliant transfers.
+- **`AssetOracle.sol`**: Maintains up-to-date valuations for assets by aggregating off-chain price data.
+- **`ZKVerifier.sol` / `UltraVerifier.sol`**: The on-chain proof verification logic generated from Noir circuits.
 
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
+## 🛠 Setup & Commands
 
 ### Build
-
-```shell
-$ forge build
+```bash
+forge build
 ```
 
 ### Test
-
-```shell
-$ forge test
+```bash
+forge test
 ```
 
-### Format
-
-```shell
-$ forge fmt
+### Deployment
+To deploy the contracts to the Sepolia testnet:
+```bash
+source .env
+forge script script/DeployBharatRWA.s.sol --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify
 ```
 
-### Gas Snapshots
+## 📐 Inheritance & Architecture
 
-```shell
-$ forge snapshot
-```
+The system follows a modular design pattern where compliance is decoupled from asset management. The `BharatRWAToken` checks with the `ComplianceManager` on every transfer to ensure both sender and receiver are verified.
 
-### Anvil
+## 🔗 Deployed Addresses (Sepolia)
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+- **Registry**: `0x774E3195E3efB0fa403366033881C6ab1fe14B0D`
+- **Compliance**: `0x07bfd4e030Cf250597A898E9EF43110365c7dbAC`
+- **Oracle**: `0x590AE2361F302B274a7FB7277E1f15A450BBF392`

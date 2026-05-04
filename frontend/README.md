@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BharatRWA Frontend
 
-## Getting Started
+A premium, high-performance dashboard for interacting with the BharatRWA ecosystem. Built with **Next.js** and **Tailwind CSS**.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Trading Dashboard**: Real-time price charts powered by `lightweight-charts`.
+- **KYC Onboarding**: Seamless integration with the ZK-KYC backend to generate and submit identity proofs.
+- **Asset Marketplace**: Browse and invest in fractionalized Gold, Silver, and Real Estate.
+- **Wallet Integration**: Native support for MetaMask and other EIP-1193 wallets via Ethers.js.
+- **Portfolio Tracking**: View your holdings, historical trades, and pending dividends.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Tech Stack
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Framework**: Next.js (App Router)
+- **Styling**: Tailwind CSS
+- **Blockchain**: Ethers.js (v6)
+- **Charts**: Lightweight Charts (TradingView)
+- **Icons**: Lucide React
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Getting Started
 
-## Learn More
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Configure Environment**
+   Create a `.env.local` file with the following:
+   ```env
+   NEXT_PUBLIC_BACKEND_URL=http://localhost:3008
+   NEXT_PUBLIC_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/...
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Structure
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `/src/app`: Page routes and layouts.
+- `/src/components`: Reusable UI components (Modals, Charts, Asset Cards).
+- `/src/context`: React Context for Wallet and Market state.
+- `/src/hooks`: Custom hooks for contract interactions.
+- `/src/lib`: Utility functions and constants.

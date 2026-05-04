@@ -148,7 +148,6 @@ Compaction failed: Another write batch or compaction is already active (Only a s
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
-Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
@@ -174,6 +173,8 @@ Compaction failed: Another write batch or compaction is already active (Only a s
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+[?25h
+ion failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
@@ -218,97 +219,55 @@ Compaction failed: Another write batch or compaction is already active (Only a s
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
 Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
-ring route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
- GET /marketplace 200 in 83ms (next.js: 5ms, application-code: 78ms)
- GET /admin 200 in 48ms (next.js: 10ms, application-code: 39ms)
-[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'substring')
-    at <unknown> (src/app/admin/page.js:371:40)
-    at Array.map (<anonymous>)
-    at AdminPage (src/app/admin/page.js:356:33)
-  369 |                   <td>
-  370 |                     <a href={`https://sepolia.etherscan.io/address/${a.tokenContract}`} t...
-> 371 |                       {a.tokenContract.substring(0, 8)}...{a.tokenContract.substring(36)}
-      |                                        ^
-  372 |                     </a>
-  373 |                   </td>
-  374 |                   <td><span className={`badge ${a.isActive ? "badge-active" : "badge-inac...
- GET /admin 200 in 50ms (next.js: 2ms, application-code: 48ms)
-[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'substring')
-    at <unknown> (src/app/admin/page.js:371:40)
-    at Array.map (<anonymous>)
-    at AdminPage (src/app/admin/page.js:356:33)
-  369 |                   <td>
-  370 |                     <a href={`https://sepolia.etherscan.io/address/${a.tokenContract}`} t...
-> 371 |                       {a.tokenContract.substring(0, 8)}...{a.tokenContract.substring(36)}
-      |                                        ^
-  372 |                     </a>
-  373 |                   </td>
-  374 |                   <td><span className={`badge ${a.isActive ? "badge-active" : "badge-inac...
-⚠ Fast Refresh had to perform a full reload due to a runtime error.
-✓ Compiled in 164ms
- GET /admin 200 in 58ms (next.js: 5ms, application-code: 53ms)
- GET /admin 200 in 45ms (next.js: 2ms, application-code: 43ms)
- GET /admin 200 in 42ms (next.js: 1721µs, application-code: 40ms)
-[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
-
-- A server/client branch `if (typeof window !== 'undefined')`.
-- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-- Date formatting in a user's locale which doesn't match the server.
-- External changing data without sending a snapshot of it along with the HTML.
-- Invalid HTML tag nesting.
-
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
-
-https://react.dev/link/hydration-mismatch
-
-  ...
-    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
-      <AppDevOverlayErrorBoundary globalError={[...]}>
-        <ReplaySsrOnlyErrors>
-        <DevRootHTTPAccessFallbackBoundary>
-          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
-            <HTTPAccessFallbackErrorBoundary pathname="/admin" notFound={<NotAllowedRootHTTPFallbackError>} ...>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <Head>
-                  <__next_root_layout_boundary__>
-                    <SegmentViewNode type="layout" pagePath="layout.js">
-                      <SegmentTrieNode>
-                      <link>
-                      <script>
-                      <script>
-                      <script>
-                      <script>
-                      <script>
-                      <script>
-                      <script>
-                      <script>
-                      <RootLayout>
-                        <html lang="en">
-                          <body
-+                           className="inter_396b12ce-module__rRjk0G__className playfair_display_3f24b74f-module__88bV..."
--                           className="inter_396b12ce-module__rRjk0G__className playfair_display_3f24b74f-module__88bV..."
-                          >
-                  ...
- 
- GET /marketplace 200 in 44ms (next.js: 4ms, application-code: 40ms)
-[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
- GET /dashboard 200 in 27ms (next.js: 8ms, application-code: 19ms)
- GET /trade/1 200 in 1901ms (next.js: 1852ms, application-code: 49ms)
- GET /marketplace 200 in 44ms (next.js: 4ms, application-code: 39ms)
- GET /marketplace 200 in 97ms (next.js: 3ms, application-code: 94ms)
- GET /admin 200 in 59ms (next.js: 3ms, application-code: 56ms)
- GET /marketplace 200 in 54ms (next.js: 2ms, application-code: 52ms)
- GET / 200 in 53ms (next.js: 3ms, application-code: 50ms)
- GET /admin 200 in 82ms (next.js: 4ms, application-code: 78ms)
- GET /admin 200 in 93ms (next.js: 5ms, application-code: 88ms)
- GET /admin 200 in 69ms (next.js: 2ms, application-code: 67ms)
- GET /marketplace 200 in 94ms (next.js: 4ms, application-code: 90ms)
- GET /admin 200 in 69ms (next.js: 3ms, application-code: 65ms)
- GET /marketplace 200 in 61ms (next.js: 2ms, application-code: 59ms)
- GET /marketplace 200 in 170ms (next.js: 7ms, application-code: 163ms)
- GET /admin 200 in 99ms (next.js: 6ms, application-code: 94ms)
- GET /marketplace 200 in 84ms (next.js: 9ms, application-code: 75ms)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+[?25h
+ion failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+[?25h
+ion failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+[?25h
+ion failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+[?25h
+ion failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+[?25h
+xt.js: 9ms, application-code: 75ms)
  GET /admin 200 in 66ms (next.js: 3ms, application-code: 64ms)
  GET /marketplace 200 in 27ms (next.js: 3ms, application-code: 24ms)
 [browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
@@ -398,3 +357,4 @@ https://react.dev/link/hydration-mismatch
  GET /dashboard 200 in 17ms (next.js: 1633µs, application-code: 15ms)
 ✓ Compiled in 21ms
 ✓ Compiled in 35ms
+[?25h
