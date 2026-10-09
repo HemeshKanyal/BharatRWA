@@ -1,6 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import LiveStats from "@/components/LiveStats";
+import SiteFooter from "@/components/SiteFooter";
 
 export default function HomePage() {
   return (
@@ -10,7 +12,7 @@ export default function HomePage() {
         <div className="hp-hero-content">
           <div className="hp-hero-badge">
             <span className="hp-hero-badge-icon">✦</span>
-            The Future of Ownership
+            Open source · Testnet prototype
           </div>
           <h1 className="hp-title">
             Tokenize.<br />
@@ -18,14 +20,16 @@ export default function HomePage() {
             <span className="hp-title-gradient">Transform.</span>
           </h1>
           <p className="hp-subtitle">
-            BharatRWA is the institutional-grade platform powering real-world asset tokenization on the blockchain.
+            BharatRWA issues real-world-asset tokens that only verified investors can hold. Investors prove
+            eligibility with a zero-knowledge proof, and the token enforces the rules on every transfer, on
+            Ethereum and Solana.
           </p>
           <div className="hp-hero-actions">
             <Link href="/marketplace" className="hp-btn-primary">
-              Explore Platform →
+              Explore marketplace →
             </Link>
-            <Link href="/dashboard" className="hp-btn-secondary">
-              Manage Portfolio
+            <Link href="/compliance" className="hp-btn-secondary">
+              How compliance works
             </Link>
           </div>
         </div>
@@ -35,7 +39,7 @@ export default function HomePage() {
           <div className="hp-graphic-img-wrapper" style={{ maskImage: 'radial-gradient(circle, black 50%, transparent 80%)', WebkitMaskImage: 'radial-gradient(circle, black 50%, transparent 80%)' }}>
             <Image
               src="/hero-glass-city.png"
-              alt="Tokenized City"
+              alt=""
               width={800}
               height={800}
               style={{ objectFit: 'contain' }}
@@ -75,45 +79,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats Bar */}
-      <section className="hp-stats">
-        <div className="hp-stat-item">
-          <div className="hp-stat-icon">
-            <Image src="/B-RWA-assets/Tokenizedvalue.png" alt="Value" width={48} height={48} style={{ objectFit: 'contain' }} />
-          </div>
-          <div>
-            <div className="hp-stat-val">$2.45B+</div>
-            <div className="hp-stat-label">Total Value Tokenized</div>
-          </div>
-        </div>
-        <div className="hp-stat-item">
-          <div className="hp-stat-icon">
-            <Image src="/B-RWA-assets/Tokenizedassets.png" alt="Assets" width={48} height={48} style={{ objectFit: 'contain' }} />
-          </div>
-          <div>
-            <div className="hp-stat-val">156+</div>
-            <div className="hp-stat-label">Tokenized Assets</div>
-          </div>
-        </div>
-        <div className="hp-stat-item">
-          <div className="hp-stat-icon">
-            <Image src="/B-RWA-assets/activeinvestor.png" alt="Investors" width={48} height={48} style={{ objectFit: 'contain' }} />
-          </div>
-          <div>
-            <div className="hp-stat-val">28,500+</div>
-            <div className="hp-stat-label">Active Investors</div>
-          </div>
-        </div>
-        <div className="hp-stat-item">
-          <div className="hp-stat-icon">
-            <Image src="/B-RWA-assets/india.png" alt="India" width={48} height={48} style={{ objectFit: 'contain' }} />
-          </div>
-          <div>
-            <div className="hp-stat-val">Pan-India</div>
-            <div className="hp-stat-label">Coverage & Operations</div>
-          </div>
-        </div>
-      </section>
+      {/* Live stats */}
+      <LiveStats />
 
       {/* Features Section */}
       <section style={{ position: 'relative', overflow: 'hidden', padding: '6rem 0' }}>
@@ -122,77 +89,61 @@ export default function HomePage() {
         <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: '400px', height: '400px', background: 'var(--accent-purple)', filter: 'blur(180px)', opacity: 0.08, zIndex: 0 }}></div>
         
         <div className="hp-section-header" style={{ position: 'relative', zIndex: 1 }}>
-          <span className="hp-section-sup">Why BharatRWA</span>
+          <span className="hp-section-sup">What&apos;s built</span>
           <h2 className="hp-section-title">
-            Built for Institutions.<br />
-            Designed for the <span>Future.</span>
+            Compliance enforced<br />
+            by the <span>token itself.</span>
           </h2>
           <p className="hp-section-desc">
-            BharatRWA combines compliance, technology, and liquidity to unlock the full potential of real-world assets.
+            Eligibility rules live in the token and its compliance contracts, so a transfer to an unverified
+            wallet fails on-chain instead of relying on the app to block it.
           </p>
         </div>
 
         <div className="hp-features" style={{ position: 'relative', zIndex: 1 }}>
           <div className="hp-feature-card">
-            <div className="hp-feature-icon">🛡️</div>
-            <h3 className="hp-feature-title">Institutional Grade Security</h3>
-            <p className="hp-feature-desc">Bank-level custody, advanced encryption, and on-chain compliance infrastructure.</p>
+            <div className="hp-feature-icon" aria-hidden="true">🔐</div>
+            <h3 className="hp-feature-title">Zero-knowledge KYC</h3>
+            <p className="hp-feature-desc">Prove you are 18+, KYC-verified and not sanctioned without revealing who you are. Noir circuits, UltraHonk proofs.</p>
           </div>
           <div className="hp-feature-card">
-            <div className="hp-feature-icon">⛓️</div>
-            <h3 className="hp-feature-title">Seamless Tokenization</h3>
-            <p className="hp-feature-desc">End-to-end tokenization engine with legal, KYC/AML, and smart contract automation.</p>
+            <div className="hp-feature-icon" aria-hidden="true">⚖️</div>
+            <h3 className="hp-feature-title">ERC-7943 on Ethereum</h3>
+            <p className="hp-feature-desc">canSend, canReceive and canTransfer checks on every transfer, partial freezes, and role-gated forced transfers for legal recovery.</p>
           </div>
           <div className="hp-feature-card">
-            <div className="hp-feature-icon">💧</div>
-            <h3 className="hp-feature-title">Deep Liquidity</h3>
-            <p className="hp-feature-desc">Access global liquidity pools and secondary markets built for real-world assets.</p>
+            <div className="hp-feature-icon" aria-hidden="true">◎</div>
+            <h3 className="hp-feature-title">Token-2022 on Solana</h3>
+            <p className="hp-feature-desc">A transfer hook checks an on-chain allowlist, new accounts start frozen until approved, and a permanent delegate handles recovery.</p>
           </div>
           <div className="hp-feature-card">
-            <div className="hp-feature-icon">🌐</div>
-            <h3 className="hp-feature-title">Global Accessibility</h3>
-            <p className="hp-feature-desc">Invest and manage tokenized assets across borders, 24/7, with ease.</p>
+            <div className="hp-feature-icon" aria-hidden="true">🧪</div>
+            <h3 className="hp-feature-title">Open and tested</h3>
+            <p className="hp-feature-desc">Contracts, programs and backend are open source, with 200+ automated tests including real ZK proofs verified on-chain.</p>
           </div>
         </div>
       </section>
 
-      {/* Trust & Compliance Banner */}
+      {/* Built with */}
       <section className="hp-trust-container">
         <div className="hp-trust-glass">
           <div className="hp-trust-col">
-            <div className="hp-trust-title">Trusted by Global Institutions</div>
+            <div className="hp-trust-title">Built with</div>
             <div className="hp-logos">
-              <span className="hp-logo-text" style={{ fontFamily: '"Playfair Display", serif', fontWeight: 700 }}>Goldman Sachs</span>
-              <span className="hp-logo-text" style={{ fontWeight: 900, letterSpacing: '-0.05em' }}>citi</span>
-              <span className="hp-logo-text" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 700 }}>
-                <span style={{ color: '#db0011', fontSize: '1.2rem' }}>▲</span> HSBC
-              </span>
-              <span className="hp-logo-text" style={{ fontWeight: 800 }}>BlackRock</span>
-              <span className="hp-logo-text" style={{ fontFamily: '"Playfair Display", serif', fontWeight: 600 }}>J.P.Morgan</span>
+              {["Noir", "Barretenberg", "Foundry", "OpenZeppelin", "Anchor", "Next.js"].map((t) => (
+                <span key={t} className="hp-logo-text">{t}</span>
+              ))}
             </div>
           </div>
-          
+
           <div className="hp-trust-divider"></div>
 
           <div className="hp-trust-col">
-            <div className="hp-trust-title" style={{ textAlign: 'right' }}>Compliance & Security First</div>
+            <div className="hp-trust-title hp-trust-title-right">Standards implemented</div>
             <div className="hp-badges">
-              <div className="hp-badge">
-                <div className="hp-badge-icon">🛡️</div>
-                <span>SOC 2 Type II</span>
-              </div>
-              <div className="hp-badge">
-                <div className="hp-badge-icon">📜</div>
-                <span>ISO 27001</span>
-              </div>
-              <div className="hp-badge">
-                <div className="hp-badge-icon">⚖️</div>
-                <span>AML Compliant</span>
-              </div>
-              <div className="hp-badge">
-                <div className="hp-badge-icon">✅</div>
-                <span>KYC Verified</span>
-              </div>
+              {["ERC-20", "ERC-7943", "ERC-165", "SPL Token-2022"].map((t) => (
+                <div key={t} className="hp-badge"><span>{t}</span></div>
+              ))}
             </div>
           </div>
         </div>
@@ -202,11 +153,11 @@ export default function HomePage() {
       <section className="hp-cta">
         <div className="hp-cta-left">
           <div style={{ width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Image src="/BharatRWA-logo.png" alt="BharatRWA Logo" width={80} height={80} style={{ objectFit: 'contain' }} />
+            <Image src="/BharatRWA-logo.png" alt="" width={80} height={80} style={{ objectFit: 'contain' }} />
           </div>
           <div>
-            <h2 className="hp-cta-title">The world is evolving.<br />Ownership is too.</h2>
-            <p className="hp-cta-desc">Join the future of finance with BharatRWA and unlock real value, on-chain.</p>
+            <h2 className="hp-cta-title">See it working on testnet</h2>
+            <p className="hp-cta-desc">Connect a Sepolia wallet, verify with a ZK proof and trade demo assets, or inspect the Solana devnet deployment.</p>
           </div>
         </div>
         <div className="hp-cta-btn">
@@ -216,72 +167,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="hp-footer">
-        <div className="hp-footer-brand">
-          <div className="hp-footer-logo">
-            <Image src="/BharatRWA-logo.png" alt="BharatRWA Logo" width={28} height={28} style={{ objectFit: 'contain' }} />
-            BharatRWA
-          </div>
-          <p>The institutional-grade platform powering real-world asset tokenization.</p>
-          <div className="hp-footer-socials">
-            <a href="#" className="hp-footer-social">𝕏</a>
-            <a href="#" className="hp-footer-social">in</a>
-            <a href="#" className="hp-footer-social">✈</a>
-            <a href="#" className="hp-footer-social">🎮</a>
-          </div>
-          <p style={{ marginTop: '2rem', fontSize: '0.75rem', opacity: 0.7 }}>© 2026 BharatRWA. All rights reserved.</p>
-        </div>
-
-        <div className="hp-footer-links">
-          <div className="hp-link-col">
-            <h5>Platform</h5>
-            <ul>
-              <li><Link href="/overview">Overview</Link></li>
-              <li><Link href="/how-it-works">How It Works</Link></li>
-              <li><Link href="/marketplace">Security</Link></li>
-              <li><Link href="/admin">Governance</Link></li>
-            </ul>
-          </div>
-          <div className="hp-link-col">
-            <h5>Solutions</h5>
-            <ul>
-              <li><Link href="/marketplace">Real Estate</Link></li>
-              <li><Link href="/marketplace">Private Equity</Link></li>
-              <li><Link href="/marketplace">Commodities</Link></li>
-              <li><Link href="/marketplace">Fine Art</Link></li>
-            </ul>
-          </div>
-          <div className="hp-link-col">
-            <h5>Resources</h5>
-            <ul>
-              <li><Link href="/marketplace">Market Data</Link></li>
-              <li><Link href="/dashboard">Portfolio</Link></li>
-              <li><Link href="/admin">Admin Portal</Link></li>
-              <li><Link href="/">Help Center</Link></li>
-            </ul>
-          </div>
-          <div className="hp-link-col">
-            <h5>Company</h5>
-            <ul>
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/marketplace">Marketplace</Link></li>
-              <li><Link href="/dashboard">Portfolio</Link></li>
-              <li><Link href="/admin">Custodian Panel</Link></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="hp-footer-newsletter">
-          <h5>Stay Updated</h5>
-          <p>Subscribe to our newsletter</p>
-          <div className="hp-newsletter-input">
-            <input type="email" placeholder="Enter your email" />
-            <button>→</button>
-          </div>
-          <p style={{ fontSize: '0.65rem', marginTop: '0.5rem', opacity: 0.6 }}>We respect your privacy.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,0 +1,22 @@
+{
+  "cluster": "devnet",
+  "complianceProgram": "588hz1dHm9goLKBAt4yRwNaEDeuF97teDrjd2E6XdE9E",
+  "transferHookProgram": "AtGeNjNoNobDCBP6gvtgDK1gvsWkQe2Xm3F5RziJkS88",
+  "mint": "4PC4Qm73fAvQLQNjX6xg569nQBGJx1VkdY9aZ3E99Epy",
+  "issuer": "9VP8ehu39fJZ45T1Mn4BeXH9PYK5XBxAtoEVr3bobDb7",
+  "attester": "5Sp8iczn7JbDwVouEri9GyuBrPC1Xfdja3be72Zg98Ab",
+  "metadata": {
+    "name": "BharatRWA Mumbai Office Tower",
+    "symbol": "BMOT",
+    "uri": "https://bharatrwa.hemeshkanyal.com/metadata/bmot.json"
+  },
+  "transactions": {
+    "approveAlice": "3Tfxf8syRsHh1BX7p7rgQn7EZugk2FpE1BBTjW3Zu6poZQumzWSv3vgMR5dVKKiDDRKNvbL3HvSDsCj38V8KDmcD",
+    "approveBob": "2wi6YBtY9Qt3qUBj5qHT6cuo35vhDd5hkiUWAKKK6t2DwufgrJfyNAwgsMk9b6muU2R2VMy4DbpLQanEuAoKxK4a",
+    "mintToAlice": "52h2Xyiydo3sVMsTWS9ZG4aMo866aYqCk4daukG1VpHX8xSadnsRBEPrNbDMvsdaNgdFAHa9nKVJzzayrkL7Cjbq",
+    "transferAliceToBob": "ruBEr42GaEqEdyM7Txu9SoQB1dR2RH8g4JZnJCXXHVZtm4o77D4H4KrZQEMt5ZjWQ6Vh8vhutG2KPcHTPNn45jC",
+    "thawOutsider": "3CqSfcBeg9DFmA6WmZbrobhvahbF5Bqtf37G7n1DS9KuPiJE7WhTw51JQiyWQD2vc5b3MkS6umcxbpmwqLrUzAyT",
+    "freezeBob": "g5mXu39y6heJZ9ENGSx2ighKqpQ2jZN6dxNXkEpNERkKqSp28azGSMD2VQuQg4RMjtqLbTYmQ7Xv4gAHCC5stAT",
+    "forcedTransferBobToAlice": "4xT69PbhY8o48seWPE5sEBfDiXNJFJUjjBWnPitHV3PjkT4Z26jwEXGz76s4wpBbRYxjHiEiPGkPo6CXMjCJGa3c"
+  }
+}

@@ -1,54 +1,51 @@
-FROM node:18-bullseye
+FROM node:24-bookworm
 
-# 1. Install system dependencies
-RUN apt-get update && apt-get install -y \
+# bb needs glibc >= 2.34 (bookworm has 2.36; the previous bullseye image had 2.31).
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     bash \
     git \
-    cmake \
-    build-essential \
-    libssl-dev \
-    pkg-config \
-    libc++1 \
-    libc++abi1 \
+    ca-certificates \
     jq \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Install Noir (Nargo) v1.0.0-beta.19 globally
-RUN curl -L https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash
-RUN /root/.nargo/bin/noirup -v 1.0.0-beta.19 && \
+# Pinned to the versions that generated bharat-rwa/src/zk/WalletBoundHonkVerifier.sol.
+# Proofs from other bb versions may not verify against that contract.
+ARG NARGO_VERSION=1.0.0-beta.22
+ARG BB_VERSION=5.0.0-nightly.20260522
+
+# 1. Noir (nargo)
+RUN curl -fsSL https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash && \
+    /root/.nargo/bin/noirup -v ${NARGO_VERSION} && \
     cp /root/.nargo/bin/nargo /usr/local/bin/nargo
 
-# 3. Install Barretenberg (bb) globally
-RUN curl -L https://raw.githubusercontent.com/AztecProtocol/aztec-packages/master/barretenberg/cpp/installation/install | bash && \
-    FIND_BBUP=$(find /root -name "bbup" -type f | head -n 1) && \
-    $FIND_BBUP -v 0.47.1 && \
-    FIND_BB=$(find /root -name "bb" -type f | head -n 1) && \
-    cp $FIND_BB /usr/local/bin/bb
-RUN chmod +x /usr/local/bin/bb || true
+# 2. Barretenberg (bb)
+RUN curl -fsSL https://raw.githubusercontent.com/AztecProtocol/aztec-packages/next/barretenberg/bbup/install | bash && \
+    /root/.bb/bbup -v ${BB_VERSION} && \
+    cp /root/.bb/bb /usr/local/bin/bb && \
+    chmod +x /usr/local/bin/bb && \
+    nargo --version && bb --version
 
-# 4. Setup working directory
 WORKDIR /app
 
-# 5. Copy package files and install node dependencies
+# 3. Node dependencies
 COPY --chown=node package*.json ./
-RUN npm install
+RUN npm ci --omit=dev
 
-# 6. Copy application code
+# 4. Application code
 COPY --chown=node . .
 
-# 7. Pre-compile Noir circuit
+# 5. Compile the circuit and write its verification key at build time
 WORKDIR /app/zk_kyc
-RUN nargo compile
+RUN nargo compile && \
+    bb write_vk -b ./target/zk_kyc.json -o ./target/vk -t evm
 WORKDIR /app
 
-# 8. Final permissions
 RUN chown -R node:node /app
 USER node
 
-# 9. Hugging Face environment
+# Hugging Face Spaces
 EXPOSE 7860
 ENV PORT=7860
 
-# 10. Launch server
 CMD ["node", "server.js"]

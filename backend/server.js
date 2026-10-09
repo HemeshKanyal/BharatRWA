@@ -3,7 +3,8 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const ethers = require('ethers');
-const { execSync } = require('child_process');
+const { generateProof, prepareCircuit, toolVersions, KycRequirementError } = require('./zk');
+const { TradeError, UsedTxStore, verifyBuyPayment, verifySellTransfer, minPaymentWei } = require('./trade-verify');
 
 const app = express();
 app.use(cors());
@@ -11,8 +12,7 @@ app.use(express.json());
 
 // ========== CONFIG ==========
 const PORT = process.env.PORT || 3008;
-const RPC = process.env.SEPOLIA_RPC_URL || 'https://eth-sepolia.g.alchemy.com/v2/JzLs_sIi2ruO694q7uqsK';
-const PK = process.env.PRIVATE_KEY || '0x41d3ba410a6ca9b53504aceb915acaef68f3d36201d43c00f650cf72e31ac97d';
+const { RPC, PK } = require('./config');
 
 const ADDRS = {
   REGISTRY: '0x774E3195E3efB0fa403366033881C6ab1fe14B0D',
@@ -29,7 +29,6 @@ const ORA_ABI = [
 ];
 const TOK_ABI = [
   'function mint(address,uint256) external',
-  'function transferFrom(address,address,uint256) external returns (bool)',
   'function symbol() view returns (string)',
   'function name() view returns (string)',
   'function totalSupply() view returns (uint256)',
@@ -38,10 +37,14 @@ const CMP_ABI = [
   'function isApproved(address) view returns (bool)',
   'function manualApprove(address) external',
 ];
+const ACCESS_ABI = ['function hasRole(bytes32,address) view returns (bool)'];
+const CUSTODIAN_ROLE = ethers.id('CUSTODIAN_ROLE');
 
 const provider = new ethers.JsonRpcProvider(RPC);
 const wallet = new ethers.Wallet(PK, provider);
 const DEPLOYER = wallet.address;
+const CHAIN_ID = 11155111;
+const usedTxs = new UsedTxStore(path.join(__dirname, 'used_txs.json'));
 
 // ========== MARKET DATA ==========
 const DATA_FILE = path.join(__dirname, 'market_data.json');
@@ -199,7 +202,7 @@ async function init() {
     await fetchAssetFromChain(Number(id));
   }
 
-  // Ensure deployer is KYC-approved for transferFrom
+  // Ensure deployer is KYC-approved so it can receive sold tokens
   try {
     const cm = new ethers.Contract(ADDRS.COMPLIANCE, CMP_ABI, wallet);
     const approved = await cm.isApproved(DEPLOYER);
@@ -276,86 +279,28 @@ async function updateExternalPrices() {
 }
 
 
-// ========== PROOF ENDPOINT (existing) ==========
-function computeWalletHash(addr) {
-  const c = ethers.getAddress(addr);
-  return ethers.keccak256(ethers.zeroPadValue(c, 32));
-}
-
-function computeWalletHash(addr) {
-  const c = ethers.getAddress(addr);
-  // We'll use a simple poseidon-like hash for the demo, 
-  // but for now let's just use the numeric address as the identity
-  return BigInt(c).toString();
-}
-
-async function generateZKProof(walletAddress, age) {
-  const zkDir = path.join(__dirname, 'zk_kyc');
-  const proverToml = path.join(zkDir, 'Prover.toml');
-  
-  // Convert address to Field
-  const walletField = BigInt(walletAddress).toString();
-  const secret = "123456789"; // In a real app, user would provide this
-  
-  // We need to compute the expected wallet hash. 
-  // Since our circuit computes it, we'll run execute first to get it
-  // or just hardcode the logic if it's simple. 
-  // In our main.nr, it uses pedersen_hash.
-  
-  const tomlContent = `age = ${age}
-kyc_verified = true
-sanctioned = false
-wallet = "${walletField}"
-secret = "${secret}"
-expected_wallet_hash = "${walletField}" # For simplicity, let's match wallet for now
-`;
-
-  fs.writeFileSync(proverToml, tomlContent);
-  
-  try {
-    let proof;
-    try {
-      console.log("Attempting real ZK proof generation...");
-      execSync('nargo execute witness', { cwd: zkDir });
-      // If nargo prove is available, it's better
-      try {
-        execSync('nargo prove p', { cwd: zkDir });
-        proof = '0x' + fs.readFileSync(path.join(zkDir, 'proofs', 'p.proof')).toString('hex');
-      } catch (e) {
-        // Fallback to bb if nargo prove fails
-        execSync('bb prove -b ./target/zk_kyc.json -w ./target/zk_kyc.gz -o ./target/proof', { cwd: zkDir });
-        proof = '0x' + fs.readFileSync(path.join(zkDir, 'target', 'proof')).toString('hex');
-      }
-    } catch (err) {
-      console.warn("Real ZK failed, falling back to High-Fidelity proof for demo compatibility.");
-      // Standard 64-byte or 128-byte proof hex for UltraPlonk/Honk
-      proof = "0x" + "a".repeat(512); 
-    }
-    
-    // Public inputs for the contract (wallet address)
-    const publicInputs = [ethers.zeroPadValue(walletAddress, 32)];
-    
-    return { proof, publicInputs };
-  } catch (err) {
-    console.error("Critical Prover Error:", err.message);
-    throw err;
-  }
-}
-
+// ========== ZK-KYC PROOF ==========
+// Real proofs only. Inputs are self-declared in this demo (no KYC provider signature).
 app.post('/generate-proof', async (req, res) => {
-  const { walletAddress, age, documentId } = req.body;
-  if (!walletAddress || !age || !documentId) return res.status(400).json({ error: 'Missing params' });
-  
+  const { walletAddress, age } = req.body; // documentId from older clients is ignored
+  let norm;
+  try { norm = ethers.getAddress(walletAddress); } catch { return res.status(400).json({ error: 'Invalid wallet address' }); }
+  const ageNum = Number(age);
+
   try {
-    const norm = ethers.getAddress(walletAddress);
-    console.log(`Generating REAL ZK proof for ${norm}, age: ${age}`);
-    
-    const { proof, publicInputs } = await generateZKProof(norm, age);
-    
+    console.log(`Generating ZK proof for ${norm}`);
+    const { proof, publicInputs } = generateProof(norm, ageNum);
     res.json({ proof, publicInputs });
   } catch (e) {
-    res.status(500).json({ error: "ZK Proof Generation Failed: " + e.message });
+    if (e instanceof KycRequirementError) return res.status(400).json({ error: e.message });
+    console.error('Proof generation failed:', e.message);
+    res.status(500).json({ error: 'Proof generation failed. Please try again later.' });
   }
+});
+
+// ========== CONFIG ==========
+app.get('/api/config', (req, res) => {
+  res.json({ deployer: DEPLOYER, chainId: CHAIN_ID, contracts: ADDRS, zk: toolVersions() });
 });
 
 // ========== MARKET API ==========
@@ -390,27 +335,42 @@ app.post('/api/assets/sync', async (req, res) => {
   res.json({ success: true, count: ids.length });
 });
 
+// Image URLs shown on the marketplace. Requires a fresh signature from an
+// AssetRegistry admin or custodian (the admin page signs it).
+const METADATA_SIG_MAX_AGE_MS = 10 * 60 * 1000;
+function metadataMessage(assetId, imageUrl, issuedAt) {
+  return `BharatRWA: set image for asset ${assetId}\nimageUrl: ${imageUrl}\nissuedAt: ${issuedAt}`;
+}
+
 app.post('/api/assets/:assetId/metadata', async (req, res) => {
-  const { assetId } = req.params;
-  const { imageUrl } = req.body;
-  
-  console.log(`Updating metadata for asset #${assetId}...`);
-  
-  // First ensure we have the asset data from chain
-  if (!market[assetId] || !market[assetId].candles) {
-    await fetchAssetFromChain(Number(assetId));
+  const assetId = Number(req.params.assetId);
+  const { imageUrl, issuedAt, signature } = req.body;
+  if (!Number.isInteger(assetId) || assetId < 0) return res.status(400).json({ error: 'Invalid asset id' });
+  try {
+    const u = new URL(imageUrl);
+    if (u.protocol !== 'https:') throw new Error();
+  } catch { return res.status(400).json({ error: 'imageUrl must be an https URL' }); }
+  if (!signature || !issuedAt || Math.abs(Date.now() - Number(issuedAt)) > METADATA_SIG_MAX_AGE_MS) {
+    return res.status(401).json({ error: 'Missing or expired signature' });
   }
-  
-  if (market[assetId]) {
-    market[assetId].imageUrl = imageUrl;
-    save();
-    res.json({ success: true, imageUrl });
-  } else {
-    // If sync failed, we still store the image in case it syncs later
-    market[assetId] = { imageUrl };
-    save();
-    res.json({ success: true, imageUrl, warning: 'Asset not yet synced from chain' });
+
+  try {
+    const signer = ethers.verifyMessage(metadataMessage(assetId, imageUrl, issuedAt), signature);
+    const reg = new ethers.Contract(ADDRS.REGISTRY, ACCESS_ABI, provider);
+    const [isAdmin, isCustodian] = await Promise.all([
+      reg.hasRole(ethers.ZeroHash, signer),
+      reg.hasRole(CUSTODIAN_ROLE, signer),
+    ]);
+    if (!isAdmin && !isCustodian) return res.status(403).json({ error: 'Signer is not a registry admin or custodian' });
+  } catch (e) {
+    return res.status(401).json({ error: 'Invalid signature' });
   }
+
+  if (!market[assetId] || !market[assetId].candles) await fetchAssetFromChain(assetId);
+  if (!market[assetId]) return res.status(404).json({ error: 'Asset not found' });
+  market[assetId].imageUrl = imageUrl;
+  save();
+  res.json({ success: true, imageUrl });
 });
 
 app.get('/api/market/:assetId', (req, res) => {
@@ -435,89 +395,93 @@ app.get('/api/market/:assetId', (req, res) => {
 });
 
 // ========== BUY ==========
+// The client first sends ETH to DEPLOYER, then posts the tx hash. We check the
+// payment on-chain (sender, recipient, amount, age, not used before) and mint.
+const isTxHash = (h) => typeof h === 'string' && /^0x[0-9a-fA-F]{64}$/.test(h);
+
+async function loadTx(hash) {
+  const [tx, receipt] = await Promise.all([provider.getTransaction(hash), provider.getTransactionReceipt(hash)]);
+  const block = receipt ? await provider.getBlock(receipt.blockNumber) : null;
+  return { tx, receipt, block };
+}
+
 app.post('/buy', async (req, res) => {
   const { walletAddress, assetId, amount, txHash } = req.body;
-  if (!walletAddress || !assetId || !amount) return res.status(400).json({ error: 'Missing params' });
   const d = market[assetId];
   if (!d) return res.status(404).json({ error: 'Asset not found' });
+  const amountNum = Number(amount);
+  if (!Number.isFinite(amountNum) || amountNum <= 0 || amountNum > 1e9) return res.status(400).json({ error: 'Invalid amount' });
+  if (!isTxHash(txHash)) return res.status(400).json({ error: 'Payment transaction hash required' });
+  let buyer;
+  try { buyer = ethers.getAddress(walletAddress); } catch { return res.status(400).json({ error: 'Invalid wallet address' }); }
+  if (!usedTxs.claim(txHash)) return res.status(409).json({ error: 'This payment has already been used' });
 
   try {
-    const norm = ethers.getAddress(walletAddress);
-    const normToken = ethers.getAddress(d.tokenAddress);
+    const chain = await loadTx(txHash);
+    verifyBuyPayment({
+      ...chain, buyer, deployer: DEPLOYER,
+      minValueWei: minPaymentWei(amountNum, d.currentPrice),
+      now: Math.floor(Date.now() / 1000),
+    });
 
-    // Verify ETH tx if provided
-    if (txHash) {
-      const receipt = await provider.getTransactionReceipt(txHash);
-      if (!receipt || receipt.status !== 1) return res.status(400).json({ error: 'ETH tx failed or not found' });
-    }
-
-    // Mint tokens
-    const tok = new ethers.Contract(normToken, TOK_ABI, wallet);
-    console.log(`BUY: Minting ${amount} ${d.symbol} to ${norm}`);
-    const tx = await tok.mint(norm, ethers.parseEther(amount.toString()));
+    const tok = new ethers.Contract(ethers.getAddress(d.tokenAddress), TOK_ABI, wallet);
+    console.log(`BUY: Minting ${amountNum} ${d.symbol} to ${buyer} (payment ${txHash})`);
+    const tx = await tok.mint(buyer, ethers.parseEther(amountNum.toString()));
     await tx.wait(1);
-    console.log('Mint tx:', tx.hash);
+    usedTxs.persist();
 
-    recordTrade(assetId, 'buy', d.currentPrice, amount, norm, tx.hash);
-
+    recordTrade(assetId, 'buy', d.currentPrice, amountNum, buyer, tx.hash);
     res.json({ success: true, txHash: tx.hash, newPrice: market[assetId].currentPrice });
   } catch (e) {
+    usedTxs.release(txHash);
+    if (e instanceof TradeError) return res.status(400).json({ error: e.message });
     console.error('Buy error:', e.message);
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: 'Buy failed: ' + (e.shortMessage || e.message) });
   }
 });
 
 // ========== SELL ==========
+// The client first transfers tokens to DEPLOYER from their own wallet, then posts
+// the tx hash. The amount paid out is read from the on-chain Transfer event.
 app.post('/sell', async (req, res) => {
-  const { walletAddress, assetId, amount } = req.body;
-  if (!walletAddress || !assetId || !amount) return res.status(400).json({ error: 'Missing params' });
+  const { walletAddress, assetId, txHash } = req.body;
   const d = market[assetId];
   if (!d) return res.status(404).json({ error: 'Asset not found' });
+  if (!isTxHash(txHash)) return res.status(400).json({ error: 'Token transfer transaction hash required' });
+  let seller;
+  try { seller = ethers.getAddress(walletAddress); } catch { return res.status(400).json({ error: 'Invalid wallet address' }); }
+  if (!usedTxs.claim(txHash)) return res.status(409).json({ error: 'This transfer has already been used' });
 
   try {
-    const norm = ethers.getAddress(walletAddress);
-    const normToken = ethers.getAddress(d.tokenAddress);
+    const chain = await loadTx(txHash);
+    const amountWei = verifySellTransfer({
+      ...chain, token: d.tokenAddress, seller, deployer: DEPLOYER, now: Math.floor(Date.now() / 1000),
+    });
+    const amount = Number(ethers.formatEther(amountWei));
     const ethAmount = d.currentPrice * amount;
+    const payout = ethers.parseEther(ethAmount.toFixed(18));
+    if ((await provider.getBalance(DEPLOYER)) < payout) {
+      throw new TradeError('The demo exchange is out of test ETH; try again later');
+    }
 
-    // Transfer tokens from user to deployer
-    const tok = new ethers.Contract(normToken, TOK_ABI, wallet);
-    console.log(`SELL: Transferring ${amount} ${d.symbol} from ${norm}`);
-    const tx1 = await tok.transferFrom(norm, DEPLOYER, ethers.parseEther(amount.toString()));
-    await tx1.wait(1);
-    console.log('Transfer tx:', tx1.hash);
-
-    // Send ETH back to user
-    console.log(`SELL: Sending ${ethAmount.toFixed(8)} ETH to ${norm}`);
-    const tx2 = await wallet.sendTransaction({ to: norm, value: ethers.parseEther(ethAmount.toFixed(8)) });
-    await tx2.wait(1);
-    console.log('ETH tx:', tx2.hash);
-
-    recordTrade(assetId, 'sell', d.currentPrice, amount, norm, tx1.hash);
-
-    res.json({ success: true, txHash: tx1.hash, ethTxHash: tx2.hash, ethReceived: ethAmount, newPrice: market[assetId].currentPrice });
-  } catch (e) {
-    console.error('Sell error:', e.message);
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// ========== LEGACY INVEST (keep backward compat) ==========
-app.post('/invest', async (req, res) => {
-  const { walletAddress, tokenAddress, amount } = req.body;
-  if (!walletAddress || !tokenAddress || !amount) return res.status(400).json({ error: 'Missing params' });
-  try {
-    const nw = ethers.getAddress(walletAddress);
-    const nt = ethers.getAddress(tokenAddress);
-    const tok = new ethers.Contract(nt, TOK_ABI, wallet);
-    const tx = await tok.mint(nw, ethers.parseEther(amount.toString()));
+    console.log(`SELL: Paying ${ethAmount.toFixed(8)} ETH to ${seller} for ${amount} ${d.symbol} (transfer ${txHash})`);
+    const tx = await wallet.sendTransaction({ to: seller, value: payout });
     await tx.wait(1);
-    res.json({ success: true, txHash: tx.hash });
+    usedTxs.persist();
+
+    recordTrade(assetId, 'sell', d.currentPrice, amount, seller, txHash);
+    res.json({ success: true, txHash, ethTxHash: tx.hash, ethReceived: ethAmount, newPrice: market[assetId].currentPrice });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    usedTxs.release(txHash);
+    if (e instanceof TradeError) return res.status(400).json({ error: e.message });
+    console.error('Sell error:', e.message);
+    res.status(500).json({ error: 'Sell failed: ' + (e.shortMessage || e.message) });
   }
 });
 
 // ========== START ==========
+try { prepareCircuit(); } catch (e) { console.error('ZK circuit setup failed:', e.message); }
+
 init().then(() => {
   app.listen(PORT, () => console.log(`BharatRWA Exchange running on port ${PORT}`));
 }).catch(e => {
