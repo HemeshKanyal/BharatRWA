@@ -5,21 +5,32 @@ with two Anchor programs that enforce an investor allowlist on every transfer.
 
 ## Devnet deployment
 
-> **Status: not yet deployed.** The programs, scripts and tests are complete
-> and pass locally; the devnet deploy is waiting on devnet SOL (the faucet
-> rate-limited this machine). The addresses below are filled in by the deploy
-> steps at the end of this file.
+Deployed 2026-10-09 with Anchor 1.2.1 / Agave 4.3.0.
 
 | Item | Address |
 |---|---|
-| Compliance program | `588hz1dHm9goLKBAt4yRwNaEDeuF97teDrjd2E6XdE9E` *(program ID; not yet deployed)* |
-| Transfer hook program | `AtGeNjNoNobDCBP6gvtgDK1gvsWkQe2Xm3F5RziJkS88` *(program ID; not yet deployed)* |
-| RWA mint | *pending* |
-| Issuer (mint authority, permanent delegate) | *pending* |
-| Attester | *pending* |
+| Compliance program | [`588hz1dHm9goLKBAt4yRwNaEDeuF97teDrjd2E6XdE9E`](https://explorer.solana.com/address/588hz1dHm9goLKBAt4yRwNaEDeuF97teDrjd2E6XdE9E?cluster=devnet) |
+| Transfer hook program | [`AtGeNjNoNobDCBP6gvtgDK1gvsWkQe2Xm3F5RziJkS88`](https://explorer.solana.com/address/AtGeNjNoNobDCBP6gvtgDK1gvsWkQe2Xm3F5RziJkS88?cluster=devnet) |
+| RWA mint (BMOT, 6 decimals) | [`4PC4Qm73fAvQLQNjX6xg569nQBGJx1VkdY9aZ3E99Epy`](https://explorer.solana.com/address/4PC4Qm73fAvQLQNjX6xg569nQBGJx1VkdY9aZ3E99Epy?cluster=devnet) |
+| Issuer (mint authority, permanent delegate, upgrade authority) | [`9VP8ehu39fJZ45T1Mn4BeXH9PYK5XBxAtoEVr3bobDb7`](https://explorer.solana.com/address/9VP8ehu39fJZ45T1Mn4BeXH9PYK5XBxAtoEVr3bobDb7?cluster=devnet) |
+| Attester | [`5Sp8iczn7JbDwVouEri9GyuBrPC1Xfdja3be72Zg98Ab`](https://explorer.solana.com/address/5Sp8iczn7JbDwVouEri9GyuBrPC1Xfdja3be72Zg98Ab?cluster=devnet) |
 
-`deployments/devnet.json` records the same addresses plus the signatures of
-the demo transactions.
+Demo transactions (`npm run demo`):
+
+| Step | Transaction |
+|---|---|
+| Approve investor (IN): write entry + thaw | [approveAlice](https://explorer.solana.com/tx/3Tfxf8syRsHh1BX7p7rgQn7EZugk2FpE1BBTjW3Zu6poZQumzWSv3vgMR5dVKKiDDRKNvbL3HvSDsCj38V8KDmcD?cluster=devnet) |
+| Approve investor (AE) | [approveBob](https://explorer.solana.com/tx/2wi6YBtY9Qt3qUBj5qHT6cuo35vhDd5hkiUWAKKK6t2DwufgrJfyNAwgsMk9b6muU2R2VMy4DbpLQanEuAoKxK4a?cluster=devnet) |
+| Mint 1,000 to approved investor | [mintToAlice](https://explorer.solana.com/tx/52h2Xyiydo3sVMsTWS9ZG4aMo866aYqCk4daukG1VpHX8xSadnsRBEPrNbDMvsdaNgdFAHa9nKVJzzayrkL7Cjbq?cluster=devnet) |
+| Allowlisted transfer (100) | [transferAliceToBob](https://explorer.solana.com/tx/ruBEr42GaEqEdyM7Txu9SoQB1dR2RH8g4JZnJCXXHVZtm4o77D4H4KrZQEMt5ZjWQ6Vh8vhutG2KPcHTPNn45jC?cluster=devnet) |
+| Issuer thaws a non-allowlisted account | [thawOutsider](https://explorer.solana.com/tx/3CqSfcBeg9DFmA6WmZbrobhvahbF5Bqtf37G7n1DS9KuPiJE7WhTw51JQiyWQD2vc5b3MkS6umcxbpmwqLrUzAyT?cluster=devnet) |
+| Issuer freeze + legal hold | [freezeBob](https://explorer.solana.com/tx/g5mXu39y6heJZ9ENGSx2ighKqpQ2jZN6dxNXkEpNERkKqSp28azGSMD2VQuQg4RMjtqLbTYmQ7Xv4gAHCC5stAT?cluster=devnet) |
+| Forced transfer out of frozen account (thaw → transfer → re-freeze) | [forcedTransferBobToAlice](https://explorer.solana.com/tx/4xT69PbhY8o48seWPE5sEBfDiXNJFJUjjBWnPitHV3PjkT4Z26jwEXGz76s4wpBbRYxjHiEiPGkPo6CXMjCJGa3c?cluster=devnet) |
+
+The blocked transfer (to a thawed but non-allowlisted wallet) has no
+signature because it fails simulation. The hook returns
+`DestinationNotAllowlisted` (error 6001). `deployments/devnet.json` records
+the same addresses and signatures.
 
 ## How it works
 
@@ -247,7 +258,7 @@ npm run demo                              # all of the above, end to end
 
 ```bash
 solana config set --url devnet
-solana address                     # fund this with ~4 devnet SOL (https://faucet.solana.com)
+solana address                     # fund with ~3 devnet SOL (https://faucet.solana.com); the 2026-10-09 deploy + demo used 2.16 SOL
 anchor build
 anchor deploy --provider.cluster devnet
 npm run mint:create
