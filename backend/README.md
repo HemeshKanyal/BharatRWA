@@ -46,7 +46,7 @@ The backend is fully dockerized to include the necessary dependencies for ZK-pro
 
 ```bash
 docker build -t bharat-rwa-backend .
-docker run -p 3008:3008 bharat-rwa-backend
+docker run -p 3008:3008 -e PRIVATE_KEY=... -e SEPOLIA_RPC_URL=... bharat-rwa-backend
 ```
 
 ## 🔐 Environment Variables
@@ -54,3 +54,5 @@ docker run -p 3008:3008 bharat-rwa-backend
 - `PRIVATE_KEY`: The wallet private key for the system deployer/custodian.
 - `SEPOLIA_RPC_URL`: Ethereum Sepolia RPC endpoint.
 - `PORT`: Port to run the server on (default 3008).
+
+`PRIVATE_KEY` and `SEPOLIA_RPC_URL` are **required** — the server and scripts exit on start-up if either is missing (there are no hardcoded fallbacks). Locally, put them in `backend/.env` (gitignored) and run `node --env-file=.env server.js`. On Hugging Face, add them as Space secrets.
