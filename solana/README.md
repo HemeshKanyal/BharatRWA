@@ -259,6 +259,7 @@ npm run demo                              # all of the above, end to end
 ```bash
 solana config set --url devnet
 solana address                     # fund with ~3 devnet SOL (https://faucet.solana.com); the 2026-10-09 deploy + demo used 2.16 SOL
+anchor keys sync     # fresh clone only: switch declare_id! to your own new keypairs
 anchor build
 anchor deploy --provider.cluster devnet
 npm run mint:create

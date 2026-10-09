@@ -23,11 +23,14 @@ forge test
 ```
 
 ### Deployment
-To deploy the contracts to the Sepolia testnet:
+Dependencies (`lib/`) are not committed; see the root README for the fetch commands.
+
+To deploy the original V1 stack (`script/DeployAll.s.sol`) to Sepolia, with
+`PRIVATE_KEY`, `SEPOLIA_RPC_URL` and `ETHERSCAN_API_KEY` in `.env`:
 ```bash
-source .env
-forge script script/DeployBharatRWA.s.sol --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify
+make deploy-sepolia                    # mock verifier unless USE_REAL_VERIFIER=true
 ```
+For the ERC-7943 token, see [Deploy (Sepolia)](#deploy-sepolia) below.
 
 ## 📐 Inheritance & Architecture
 

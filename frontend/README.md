@@ -25,12 +25,10 @@ A premium, high-performance dashboard for interacting with the BharatRWA ecosyst
    npm install
    ```
 
-2. **Configure Environment**
-   Create a `.env.local` file with the following:
-   ```env
-   NEXT_PUBLIC_BACKEND_URL=http://localhost:3008
-   NEXT_PUBLIC_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/...
-   ```
+2. **Configure endpoints**
+   Contract addresses and the backend URL are set in `src/config.js`
+   (there are no environment variables). Point `BACKEND_URL` at
+   `http://localhost:3008` to use a local backend.
 
 3. **Run Development Server**
    ```bash
