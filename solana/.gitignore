@@ -11,3 +11,4 @@ test-ledger
 *-keypair.json
 keys/
 .env
+deployments/localnet.json
