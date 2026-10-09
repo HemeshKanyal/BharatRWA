@@ -6,7 +6,8 @@ import { KycModal } from "@/components/KycModal";
 import { useToast } from "@/components/ToastProvider";
 import { ethers } from "ethers";
 import ComplianceManagerABI from "@/abis/ComplianceManager.json";
-import { CONTRACTS, BACKEND_URL } from "@/config";
+import { CONTRACTS } from "@/config";
+import { fetchBackend } from "@/utils/chain";
 import Link from "next/link";
 
 function getAssetMeta(name) {
@@ -34,51 +35,63 @@ export default function MarketplacePage() {
   const [isCheckingKyc, setIsCheckingKyc] = useState(false);
   const [assets, setAssets] = useState([]);
   const [loadingAssets, setLoadingAssets] = useState(true);
+  const [assetsError, setAssetsError] = useState(null);
+  const [slowBackend, setSlowBackend] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   // Fetch on-chain KYC status
   useEffect(() => {
-    const checkKyc = async () => {
-      if (!address || !provider) return;
-      setIsCheckingKyc(true);
-      try {
-        const cm = new ethers.Contract(CONTRACTS.COMPLIANCE_MANAGER, ComplianceManagerABI.abi, provider);
-        const approved = await cm.isApproved(address);
-        setKycVerified(approved);
-      } catch (e) {
-        console.error("KYC check failed:", e);
-      } finally {
-        setIsCheckingKyc(false);
-      }
+    if (!address || !provider) return;
+    let cancelled = false;
+    const cm = new ethers.Contract(CONTRACTS.COMPLIANCE_MANAGER, ComplianceManagerABI.abi, provider);
+    Promise.resolve()
+      .then(() => !cancelled && setIsCheckingKyc(true))
+      .then(() => cm.isApproved(address))
+      .then((approved) => !cancelled && setKycVerified(approved))
+      .catch((e) => console.error("KYC check failed:", e))
+      .finally(() => !cancelled && setIsCheckingKyc(false));
+    return () => {
+      cancelled = true;
     };
-    checkKyc();
   }, [address, provider]);
 
-  // Fetch from new backend API
+  // Market data from the backend (refreshes every 10s)
   useEffect(() => {
+    let cancelled = false;
     const fetchAssets = async () => {
       try {
-        setLoadingAssets(true);
-        const res = await fetch(`${BACKEND_URL}/api/assets`);
-        if (!res.ok) throw new Error("Failed to fetch assets");
+        const res = await fetchBackend("/api/assets", { onSlow: () => !cancelled && setSlowBackend(true) });
+        if (!res.ok) throw new Error(`Backend returned ${res.status}`);
         const data = await res.json();
-        
-        const activeAssets = data.filter(a => a.isActive);
-        setAssets(activeAssets.map(a => ({
+        if (cancelled) return;
+        setAssets(data.filter((a) => a.isActive).map((a) => ({
           ...a,
-          priceStr: a.currentPrice ? `${a.currentPrice.toFixed(6)} ETH` : "—",
           supplyStr: Number(a.totalSupply).toLocaleString(),
-          ...getAssetMeta(a.name)
+          ...getAssetMeta(a.name),
         })));
+        setAssetsError(null);
       } catch (err) {
-        console.error("Failed to fetch assets:", err);
+        if (!cancelled) setAssetsError(err.message || "Network error");
       } finally {
-        setLoadingAssets(false);
+        if (!cancelled) {
+          setLoadingAssets(false);
+          setSlowBackend(false);
+        }
       }
     };
     fetchAssets();
-    const interval = setInterval(fetchAssets, 10000); // Auto-refresh prices
-    return () => clearInterval(interval);
-  }, []);
+    const interval = setInterval(fetchAssets, 10000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [reloadKey]);
+
+  const retry = () => {
+    setLoadingAssets(true);
+    setAssetsError(null);
+    setReloadKey((k) => k + 1);
+  };
 
   const handleKycVerified = async (proof, publicInputs) => {
     if (!signer) return;
@@ -92,7 +105,8 @@ export default function MarketplacePage() {
       setIsKycOpen(false);
       addToast("✅", "KYC Verified!", "You can now trade assets.");
     } catch (err) {
-      addToast("❌", "Verification Failed", err.reason || err.message);
+      addToast("❌", "Verification Failed", err.reason || err.shortMessage || err.message);
+      throw new Error(err.reason || err.shortMessage || "Transaction failed or was rejected");
     }
   };
 
@@ -107,9 +121,9 @@ export default function MarketplacePage() {
             ) : kycVerified ? (
               <span className="badge badge-verified">✓ KYC Verified</span>
             ) : (
-              <span className="badge badge-warning" onClick={() => setIsKycOpen(true)} style={{ cursor: 'pointer' }}>
-                ⚠ Complete KYC to Trade
-              </span>
+              <button className="badge badge-warning badge-button" onClick={() => setIsKycOpen(true)}>
+                ⚠ Complete KYC to trade
+              </button>
             )}
           </div>
         </div>
@@ -121,8 +135,8 @@ export default function MarketplacePage() {
           <div className="hero-eyebrow">🔗 Powered by Zero-Knowledge Proofs</div>
           <h1 className="hero-title">Trade <span>Real World Assets</span> with Confidence</h1>
           <p className="hero-description">
-            Tokenized gold, real estate, and commodities — verified with
-            privacy-preserving KYC and secured on Ethereum.
+            Demo tokens for gold, real estate and other assets on the Sepolia testnet. Only wallets verified with a
+            zero-knowledge proof can hold or receive them.
           </p>
         </div>
       </section>
@@ -131,18 +145,18 @@ export default function MarketplacePage() {
       <div className="stats-bar">
         <div className="stat-card">
           <div className="stat-label">Listed Assets</div>
-          <div className="stat-value">{loadingAssets ? "..." : assets.length}</div>
+          <div className="stat-value">{loadingAssets ? "..." : assetsError && !assets.length ? "—" : assets.length}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">Total 24h Vol</div>
-          <div className="stat-value">{loadingAssets ? "..." : assets.reduce((sum, a) => sum + a.volume24h, 0).toLocaleString()}</div>
+          <div className="stat-label">24h volume (simulated)</div>
+          <div className="stat-value">{loadingAssets ? "..." : assetsError && !assets.length ? "—" : assets.reduce((sum, a) => sum + a.volume24h, 0).toLocaleString()}</div>
         </div>
         <div className="stat-card">
           <div className="stat-label">Network</div>
           <div className="stat-value">Sepolia</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">Protocol</div>
+          <div className="stat-label">ZK proofs</div>
           <div className="stat-value">UltraHonk</div>
         </div>
       </div>
@@ -154,13 +168,18 @@ export default function MarketplacePage() {
 
       <div className="asset-grid">
         {loadingAssets && assets.length === 0 ? (
-          <div className="asset-card" style={{ textAlign: "center", padding: "3rem" }}>
-            <div className="loading-pulse" style={{ fontSize: "1.5rem" }}>⏳</div>
-            <p style={{ color: "var(--text-secondary)", marginTop: "0.5rem" }}>Loading market data...</p>
+          <div className="asset-card asset-card-message" role="status">
+            <div className="loading-pulse" style={{ fontSize: "1.5rem" }} aria-hidden="true">⏳</div>
+            <p>{slowBackend ? "Waking up the demo backend. This can take up to a minute on the free tier…" : "Loading market data…"}</p>
+          </div>
+        ) : assetsError && assets.length === 0 ? (
+          <div className="asset-card asset-card-message" role="alert">
+            <p>Couldn&apos;t reach the market data backend ({assetsError}).</p>
+            <button className="btn btn-primary" onClick={retry} style={{ marginTop: "1rem" }}>Try again</button>
           </div>
         ) : assets.length === 0 ? (
-          <div className="asset-card" style={{ textAlign: "center", padding: "3rem" }}>
-            <p style={{ color: "var(--text-secondary)" }}>No assets registered yet. Use the Admin panel to register one.</p>
+          <div className="asset-card asset-card-message">
+            <p>No assets registered yet. Use the Admin panel to register one.</p>
           </div>
         ) : (
           assets.map((asset) => (
@@ -191,7 +210,7 @@ export default function MarketplacePage() {
               </div>
               <div className="asset-details">
                 <div className="asset-detail-item">
-                  <span className="asset-detail-label">24h Vol</span>
+                  <span className="asset-detail-label">24h vol (sim.)</span>
                   <span className="asset-detail-value">{asset.volume24h.toLocaleString()}</span>
                 </div>
                 <div className="asset-detail-item">

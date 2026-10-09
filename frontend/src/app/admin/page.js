@@ -111,11 +111,19 @@ export default function AdminPage() {
         try {
           const parsedLogs = registry.interface.parseLog(log);
           const assetId = Number(parsedLogs.args.assetId);
-          await fetch(`${BACKEND_URL}/api/assets/${assetId}/metadata`, {
+          // The backend only accepts image updates signed by a registry admin/custodian.
+          const issuedAt = Date.now();
+          const message = `BharatRWA: set image for asset ${assetId}\nimageUrl: ${assetImage}\nissuedAt: ${issuedAt}`;
+          const signature = await signer.signMessage(message);
+          const res = await fetch(`${BACKEND_URL}/api/assets/${assetId}/metadata`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ imageUrl: assetImage })
+            body: JSON.stringify({ imageUrl: assetImage, issuedAt, signature })
           });
+          if (!res.ok) {
+            const d = await res.json().catch(() => ({}));
+            addToast("⚠️", "Image not saved", d.error || "The backend rejected the image URL.");
+          }
         } catch (e) {
           console.error("Failed to save image metadata:", e);
         }

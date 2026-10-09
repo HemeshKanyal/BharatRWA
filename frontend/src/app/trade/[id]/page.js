@@ -6,13 +6,23 @@ import { useWallet } from "@/components/WalletProvider";
 import { useToast } from "@/components/ToastProvider";
 import dynamic from "next/dynamic";
 import { ethers } from "ethers";
-import { BACKEND_URL, CONTRACTS } from "@/config";
+import { CONTRACTS, sepoliaExplorer } from "@/config";
+import { fetchBackend, getBackendConfig } from "@/utils/chain";
 import ComplianceManagerABI from "@/abis/ComplianceManager.json";
 import BharatRWATokenABI from "@/abis/BharatRWAToken.json";
 
 const TradingChart = dynamic(() => import("@/components/TradingChart"), { ssr: false });
 
-const DEPLOYER = "0x623B2a013d804253101A0b1679315c677427AFd1";
+async function postSettlement(path, body) {
+  const res = await fetchBackend(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const d = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(d.error || `Settlement failed (${res.status})`);
+  return d;
+}
 
 export default function TradePage() {
   const { id } = useParams();
@@ -26,110 +36,131 @@ export default function TradePage() {
   const [executing, setExecuting] = useState(false);
   const [kycOk, setKycOk] = useState(false);
   const [userBalance, setUserBalance] = useState("0");
+  const [exchange, setExchange] = useState(null); // backend config: { deployer }
+  const [exchangeError, setExchangeError] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  // A payment/transfer that went through on-chain but whose settlement call failed.
+  const [pending, setPending] = useState(null); // { kind: "buy" | "sell", txHash, amount }
 
-  // Fetch market data
-  const fetchData = useCallback(async () => {
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/market/${id}`);
-      if (!res.ok) throw new Error("Not found");
-      const d = await res.json();
-      setData(d);
-    } catch { }
-    setLoading(false);
-  }, [id]);
+  const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
-  useEffect(() => { fetchData(); const iv = setInterval(fetchData, 10000); return () => clearInterval(iv); }, [fetchData]);
-
-  // Check KYC + balance
+  // Market data (every 10s) and exchange config
   useEffect(() => {
-    const check = async () => {
-      if (!address || !provider || !data) return;
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const res = await fetchBackend(`/api/market/${id}`);
+        if (!res.ok) throw new Error("Not found");
+        const d = await res.json();
+        if (!cancelled) setData(d);
+      } catch {
+        // keep the last data; the empty state handles a missing asset
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    const iv = setInterval(load, 10000);
+    getBackendConfig()
+      .then((c) => !cancelled && setExchange(c))
+      .catch(() => !cancelled && setExchangeError(true));
+    return () => {
+      cancelled = true;
+      clearInterval(iv);
+    };
+  }, [id, refreshKey]);
+
+  // KYC status + balance
+  useEffect(() => {
+    if (!address || !provider || !data) return;
+    let cancelled = false;
+    (async () => {
       try {
         const cm = new ethers.Contract(CONTRACTS.COMPLIANCE_MANAGER, ComplianceManagerABI.abi, provider);
-        setKycOk(await cm.isApproved(address));
         const tok = new ethers.Contract(data.tokenAddress, BharatRWATokenABI.abi, provider);
-        const bal = await tok.balanceOf(address);
-        setUserBalance(ethers.formatEther(bal));
-      } catch { }
+        const [ok, bal] = await Promise.all([cm.isApproved(address), tok.balanceOf(address)]);
+        if (!cancelled) {
+          setKycOk(ok);
+          setUserBalance(ethers.formatEther(bal));
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
     };
-    check();
   }, [address, provider, data]);
 
   const ethCost = data && amount ? (parseFloat(amount) * data.currentPrice).toFixed(8) : "0";
 
-  const handleBuy = async () => {
-    if (!address || !signer) { addToast("🦊", "Connect Wallet", "Please connect MetaMask."); return; }
-    if (!kycOk) { addToast("🔐", "KYC Required", "Complete KYC on the Marketplace first."); return; }
-    if (!amount || parseFloat(amount) <= 0) return;
+  const settle = async (p) => {
+    const body = { walletAddress: address, assetId: parseInt(id), txHash: p.txHash };
+    if (p.kind === "buy") body.amount = p.amount;
+    const d = await postSettlement(p.kind === "buy" ? "/buy" : "/sell", body);
+    setPending(null);
+    setAmount("");
+    refresh();
+    return d;
+  };
 
+  const guard = () => {
+    if (!address || !signer) { addToast("🦊", "Connect Wallet", "Please connect MetaMask."); return false; }
+    if (!exchange) { addToast("⚠️", "Exchange unavailable", "Couldn't load the exchange address from the backend."); return false; }
+    if (!amount || parseFloat(amount) <= 0) return false;
+    return true;
+  };
+
+  const handleBuy = async () => {
+    if (!guard()) return;
+    if (!kycOk) { addToast("🔐", "KYC Required", "Complete KYC on the Marketplace first."); return; }
+    const qty = parseFloat(amount);
+    let p;
     try {
       setExecuting(true);
-      const cost = parseFloat(amount) * data.currentPrice;
-
-      // Step 1: Send ETH to deployer
-      addToast("⏳", "Sending ETH", `Sending ${cost.toFixed(6)} ETH for ${amount} ${data.symbol}...`);
-      const ethTx = await signer.sendTransaction({
-        to: DEPLOYER,
-        value: ethers.parseEther(cost.toFixed(8)),
-      });
+      const cost = qty * data.currentPrice;
+      addToast("⏳", "Sending ETH", `Paying ${cost.toFixed(6)} test ETH for ${qty} ${data.symbol}…`);
+      const ethTx = await signer.sendTransaction({ to: exchange.deployer, value: ethers.parseEther(cost.toFixed(18)) });
       await ethTx.wait(1);
-
-      // Step 2: Tell backend to mint
-      addToast("⏳", "Minting Tokens", "ETH received. Minting tokens...");
-      const res = await fetch(`${BACKEND_URL}/buy`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress: address, assetId: parseInt(id), amount: parseFloat(amount), txHash: ethTx.hash }),
-      });
-      const d = await res.json();
-      if (!res.ok) throw new Error(d.error);
-
-      addToast("🎉", "Buy Successful!", `Bought ${amount} ${data.symbol} @ ${data.currentPrice.toFixed(6)} ETH`);
-      setAmount("");
-      fetchData();
-
-      // Refresh balance
-      const tok = new ethers.Contract(data.tokenAddress, BharatRWATokenABI.abi, provider);
-      setUserBalance(ethers.formatEther(await tok.balanceOf(address)));
+      p = { kind: "buy", txHash: ethTx.hash, amount: qty };
+      setPending(p);
+      addToast("⏳", "Minting", "Payment confirmed. Minting your tokens…");
+      await settle(p);
+      addToast("🎉", "Buy successful", `Bought ${qty} ${data.symbol}`);
     } catch (e) {
-      addToast("❌", "Buy Failed", e.reason || e.message);
+      addToast("❌", "Buy failed", e.reason || e.shortMessage || e.message);
     } finally {
       setExecuting(false);
     }
   };
 
   const handleSell = async () => {
-    if (!address || !signer) { addToast("🦊", "Connect Wallet", "Please connect MetaMask."); return; }
-    if (!amount || parseFloat(amount) <= 0) return;
-    if (parseFloat(amount) > parseFloat(userBalance)) { addToast("❌", "Insufficient Balance", `You only have ${parseFloat(userBalance).toFixed(2)} ${data.symbol}`); return; }
-
+    if (!guard()) return;
+    const qty = parseFloat(amount);
+    if (qty > parseFloat(userBalance)) { addToast("❌", "Insufficient Balance", `You only have ${parseFloat(userBalance).toFixed(2)} ${data.symbol}`); return; }
     try {
       setExecuting(true);
-      const ethBack = (parseFloat(amount) * data.currentPrice).toFixed(6);
-
-      // Step 1: Approve deployer to take tokens
-      addToast("⏳", "Approving", `Approving ${amount} ${data.symbol} for sale...`);
+      addToast("⏳", "Transferring", `Sending ${qty} ${data.symbol} to the exchange…`);
       const tok = new ethers.Contract(data.tokenAddress, BharatRWATokenABI.abi, signer);
-      const appTx = await tok.approve(DEPLOYER, ethers.parseEther(amount));
-      await appTx.wait(1);
-
-      // Step 2: Backend does transferFrom + sends ETH
-      addToast("⏳", "Selling", `Selling ${amount} ${data.symbol} for ~${ethBack} ETH...`);
-      const res = await fetch(`${BACKEND_URL}/sell`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress: address, assetId: parseInt(id), amount: parseFloat(amount) }),
-      });
-      const d = await res.json();
-      if (!res.ok) throw new Error(d.error);
-
-      addToast("🎉", "Sell Successful!", `Sold ${amount} ${data.symbol} for ${d.ethReceived?.toFixed(6)} ETH`);
-      setAmount("");
-      fetchData();
-
-      setUserBalance(ethers.formatEther(await tok.balanceOf(address)));
+      const tx = await tok.transfer(exchange.deployer, ethers.parseEther(amount));
+      await tx.wait(1);
+      const p = { kind: "sell", txHash: tx.hash, amount: qty };
+      setPending(p);
+      addToast("⏳", "Settling", "Transfer confirmed. Sending your test ETH…");
+      const d = await settle(p);
+      addToast("🎉", "Sell successful", `Sold ${qty} ${data.symbol} for ${d.ethReceived?.toFixed(6)} ETH`);
     } catch (e) {
-      addToast("❌", "Sell Failed", e.reason || e.message);
+      addToast("❌", "Sell failed", e.reason || e.shortMessage || e.message);
+    } finally {
+      setExecuting(false);
+    }
+  };
+
+  const retryPending = async () => {
+    try {
+      setExecuting(true);
+      await settle(pending);
+      addToast("🎉", "Settled", "Your trade has been completed.");
+    } catch (e) {
+      addToast("❌", "Still failing", e.message);
     } finally {
       setExecuting(false);
     }
@@ -164,7 +195,7 @@ export default function TradePage() {
 
           {/* Order Book */}
           <div className="orderbook">
-            <h3 className="orderbook-title">Order Book</h3>
+            <h3 className="orderbook-title">Order book <span className="sim-tag">simulated</span></h3>
             <div className="orderbook-grid">
               <div className="orderbook-side">
                 <div className="orderbook-header"><span>Price (ETH)</span><span>Amount</span></div>
@@ -227,10 +258,25 @@ export default function TradePage() {
               <button
                 className={`btn btn-full ${tab === "buy" ? "btn-buy" : "btn-sell"}`}
                 onClick={tab === "buy" ? handleBuy : handleSell}
-                disabled={executing || !amount || parseFloat(amount) <= 0}
+                disabled={executing || !exchange || !!pending || !amount || parseFloat(amount) <= 0}
               >
                 {executing ? "Processing..." : tab === "buy" ? `Buy ${data.symbol}` : `Sell ${data.symbol}`}
               </button>
+
+              {pending && (
+                <div className="alert alert-error" role="alert" style={{ marginTop: "0.75rem" }}>
+                  Your {pending.kind === "buy" ? "payment" : "token transfer"} went through on-chain
+                  (<a href={sepoliaExplorer("tx", pending.txHash)} target="_blank" rel="noopener noreferrer">view</a>)
+                  but settlement failed. You can retry for 30 minutes.
+                  <button className="btn btn-primary btn-full" style={{ marginTop: "0.5rem" }} onClick={retryPending} disabled={executing}>
+                    Retry settlement
+                  </button>
+                </div>
+              )}
+
+              {exchangeError && (
+                <p className="form-hint form-hint-error">Couldn&apos;t load the exchange address from the backend; trading is disabled.</p>
+              )}
 
               {!kycOk && address && (
                 <p style={{ fontSize: "0.75rem", color: "var(--accent-red)", marginTop: "0.5rem", textAlign: "center" }}>
