@@ -26,9 +26,8 @@ A premium, high-performance dashboard for interacting with the BharatRWA ecosyst
    ```
 
 2. **Configure endpoints**
-   Contract addresses and the backend URL are set in `src/config.js`
-   (there are no environment variables). Point `BACKEND_URL` at
-   `http://localhost:3008` to use a local backend.
+   Contract addresses are in `src/config.js`. Set `NEXT_PUBLIC_BACKEND_URL`
+   (e.g. `http://localhost:3008`) to use a local backend; it defaults to the hosted one.
 
 3. **Run Development Server**
    ```bash

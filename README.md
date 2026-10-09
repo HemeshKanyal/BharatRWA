@@ -242,9 +242,11 @@ npm install
 npm run dev                         # http://localhost:3000
 ```
 
-The contract addresses and backend URL are set in `frontend/src/config.js`
-(not environment variables). By default it points at the Sepolia V1 contracts
-and the hosted backend.
+Contract addresses are in `frontend/src/config.js`. The backend URL defaults
+to the hosted backend; set `NEXT_PUBLIC_BACKEND_URL=http://localhost:3008` to
+use a local one. After deploying `BharatRWATokenV2`, set
+`CONTRACTS.TOKEN_V2` and `CONTRACTS.COMPLIANCE_MANAGER_V2` in `config.js` to
+switch the compliance checker and dashboard to the V2 contracts.
 
 ## Known limitations
 
@@ -255,16 +257,17 @@ and the hosted backend.
 - **V1 ZK flow is not sound.** The V1 `ComplianceManager` doesn't bind proofs
   to the caller, and the deployed Sepolia verifier accepts any input.
   `ComplianceManagerV2` fixes both for new deployments.
-- **The backend isn't wired to V2 yet.** `/generate-proof` returns only the
-  wallet as a public input and falls back to a fake proof when proving fails.
-  To use `ComplianceManagerV2`, it must return all six public inputs and
-  never fake a proof.
+- **The frontend still submits proofs to the V1 ComplianceManager.** The
+  backend now generates real, wallet-bound proofs with all six public inputs
+  (and never fakes one), so it's ready for `ComplianceManagerV2`. The
+  frontend switches over once V2 is deployed and configured.
 - **Two circuits.** `zk_kyc/` (pedersen wallet hash) and `backend/zk_kyc/`
   (raw wallet) differ. Only the backend circuit has a matching, tested
   verifier (`WalletBoundHonkVerifier`).
-- **The trading flow is a demo.** `/buy` mints without checking who paid or
-  how much, and `/sell` moves tokens from any wallet that approved the
-  deployer. Don't reuse it beyond testnet.
+- **The trading flow is a demo exchange.** Prices and order books are
+  simulated. Settlement is checked on-chain: `/buy` mints only against a
+  recent, unused ETH payment from the buyer, and `/sell` pays out only for a
+  token transfer the seller made themselves.
 - **Solana freezes whole accounts**, so ERC-7943 partial freezing has no
   direct equivalent. Jurisdiction is recorded on both chains but not enforced.
 - **Single keys hold powerful roles** (issuer, attester, admin). Production
