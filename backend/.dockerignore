@@ -1,0 +1,7 @@
+node_modules
+.env
+*.log
+market_data.json
+used_txs.json
+zk_kyc/target
+zk_kyc/Prover.toml

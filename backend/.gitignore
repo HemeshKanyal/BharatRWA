@@ -6,3 +6,4 @@ zk_kyc/target/
 zk_kyc/Prover.toml
 zk_kyc/witness.gz
 zk_kyc/target/proof
+used_txs.json
