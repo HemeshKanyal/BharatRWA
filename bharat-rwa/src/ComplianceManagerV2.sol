@@ -75,9 +75,7 @@ contract ComplianceManagerV2 is Initializable, UUPSUpgradeable, AccessControlUpg
     // ============================================================
 
     event InvestorVerified(address indexed wallet, bytes32 indexed nullifier, uint64 expiresAt);
-    event InvestorSet(
-        address indexed wallet, bool approved, bytes2 jurisdiction, uint64 expiresAt, address indexed by
-    );
+    event InvestorSet(address indexed wallet, bool approved, bytes2 jurisdiction, uint64 expiresAt, address indexed by);
     event InvestorBlacklisted(address indexed wallet, address indexed by);
     event InvestorUnblacklisted(address indexed wallet, address indexed by);
     event ZKVerifierUpdated(address indexed oldVerifier, address indexed newVerifier);
@@ -141,7 +139,9 @@ contract ComplianceManagerV2 is Initializable, UUPSUpgradeable, AccessControlUpg
 
         bytes32 senderField = bytes32(uint256(uint160(msg.sender)));
         if (publicInputs[PI_WALLET] != senderField) revert ProofNotForSender(publicInputs[PI_WALLET], msg.sender);
-        if (publicInputs[PI_WALLET_OUT] != senderField) revert ProofNotForSender(publicInputs[PI_WALLET_OUT], msg.sender);
+        if (publicInputs[PI_WALLET_OUT] != senderField) {
+            revert ProofNotForSender(publicInputs[PI_WALLET_OUT], msg.sender);
+        }
         if (
             uint256(publicInputs[PI_AGE_FLAG]) != 1 || uint256(publicInputs[PI_KYC_FLAG]) != 1
                 || uint256(publicInputs[PI_SANCTION_FLAG]) != 0

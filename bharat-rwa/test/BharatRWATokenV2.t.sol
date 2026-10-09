@@ -394,9 +394,7 @@ contract BharatRWATokenV2Test is Test {
     // ============================================================
 
     function _expectUnauthorized(address account, bytes32 role) internal {
-        vm.expectRevert(
-            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, account, role)
-        );
+        vm.expectRevert(abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, account, role));
     }
 
     function test_RevertFreezeByNonFreezer() public {

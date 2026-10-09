@@ -34,15 +34,7 @@ import {IERC7943Fungible} from "./interfaces/IERC7943.sol";
  *      Kept from V1 for DividendDistributor compatibility: ERC20Votes with timestamp clock,
  *      ERC20Permit, capped supply.
  */
-contract BharatRWATokenV2 is
-    ERC20,
-    ERC20Capped,
-    ERC20Permit,
-    ERC20Votes,
-    AccessControl,
-    Pausable,
-    IERC7943Fungible
-{
+contract BharatRWATokenV2 is ERC20, ERC20Capped, ERC20Permit, ERC20Votes, AccessControl, Pausable, IERC7943Fungible {
     // ============================================================
     //                          ROLES
     // ============================================================
@@ -201,10 +193,7 @@ contract BharatRWATokenV2 is
     // ============================================================
 
     /// @dev Compliance checks for every balance change except forcedTransfer.
-    function _update(address from, address to, uint256 value)
-        internal
-        override(ERC20, ERC20Capped, ERC20Votes)
-    {
+    function _update(address from, address to, uint256 value) internal override(ERC20, ERC20Capped, ERC20Votes) {
         _requireNotPaused();
         if (from != address(0)) {
             // Transfer or holder burn. If value exceeds the whole balance, let ERC20 revert

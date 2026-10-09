@@ -29,7 +29,9 @@ contract ComplianceManagerV2Test is Test {
         ComplianceManagerV2 impl = new ComplianceManagerV2();
         return ComplianceManagerV2(
             address(
-                new ERC1967Proxy(address(impl), abi.encodeCall(ComplianceManagerV2.initialize, (admin, verifier, VALIDITY)))
+                new ERC1967Proxy(
+                    address(impl), abi.encodeCall(ComplianceManagerV2.initialize, (admin, verifier, VALIDITY))
+                )
             )
         );
     }
@@ -217,9 +219,7 @@ contract ComplianceManagerV2Test is Test {
         vm.expectRevert(abi.encodeWithSelector(ComplianceManagerV2.InvalidJurisdiction.selector, bytes2("in")));
         cmMock.setInvestor(mallory, true, "in", uint64(block.timestamp + 1));
 
-        vm.expectRevert(
-            abi.encodeWithSelector(ComplianceManagerV2.ExpiryInPast.selector, uint64(block.timestamp))
-        );
+        vm.expectRevert(abi.encodeWithSelector(ComplianceManagerV2.ExpiryInPast.selector, uint64(block.timestamp)));
         cmMock.setInvestor(mallory, true, "IN", uint64(block.timestamp));
 
         // Revoked records may carry any expiry; unknown jurisdiction is 0x0000.
@@ -252,7 +252,8 @@ contract ComplianceManagerV2Test is Test {
 
     function test_OnlyComplianceRoleManagesInvestors() public {
         bytes32 role = cmMock.COMPLIANCE_ROLE();
-        bytes memory err = abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, mallory, role);
+        bytes memory err =
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, mallory, role);
         vm.startPrank(mallory);
         vm.expectRevert(err);
         cmMock.setInvestor(mallory, true, "IN", uint64(block.timestamp + 1));
@@ -264,9 +265,8 @@ contract ComplianceManagerV2Test is Test {
     }
 
     function test_OnlyAdminConfiguresAndUpgrades() public {
-        bytes memory err = abi.encodeWithSelector(
-            IAccessControl.AccessControlUnauthorizedAccount.selector, officer, bytes32(0)
-        );
+        bytes memory err =
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, officer, bytes32(0));
         vm.startPrank(officer); // has COMPLIANCE_ROLE but not admin
         vm.expectRevert(err);
         cmMock.setZKVerifier(address(1));
