@@ -1,71 +1,72 @@
 import React from "react";
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
+import { LINKS } from "@/config";
+
+export const metadata = { title: "About" };
+
+const VALUES = [
+  { icon: "🔍", title: "Verifiable", desc: "Contracts, Solana programs and backend are open source; every rule can be read and every transaction checked on a block explorer." },
+  { icon: "🔐", title: "Private", desc: "Investors prove eligibility with zero-knowledge proofs; no identity documents are stored on-chain." },
+  { icon: "⚖️", title: "Compliant by design", desc: "Transfer rules live in the token (ERC-7943, Token-2022 transfer hook), not just in the user interface." },
+];
 
 export default function AboutPage() {
   return (
     <div className="hp-container">
-      <section className="hp-section-header" style={{ marginTop: '4rem' }}>
-        <span className="hp-section-sup">Our Mission</span>
-        <h1 className="hp-section-title">Democratizing <span>Global Assets</span></h1>
+      <section className="hp-section-header page-intro">
+        <span className="hp-section-sup">About</span>
+        <h1 className="hp-section-title">Why <span>BharatRWA</span></h1>
         <p className="hp-section-desc">
-          BharatRWA is dedicated to bringing real-world assets onto the blockchain, 
-          providing transparency, liquidity, and accessibility to everyone, everywhere.
+          Tokenized real-world assets are usually securities, so only eligible investors may hold them. BharatRWA is an
+          open-source prototype that explores how to enforce that on-chain while keeping investors&apos; identities private.
         </p>
       </section>
 
-      <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', marginTop: '4rem' }}>
+      <section className="split-2 about-split">
         <div>
-          <h2 style={{ fontSize: '2rem', color: 'var(--navy)', marginBottom: '1.5rem' }}>The BharatRWA Vision</h2>
-          <p style={{ color: 'var(--text-secondary)', lineHeight: '1.8', marginBottom: '1.5rem' }}>
-            We believe that the future of finance is on-chain. By tokenizing assets like real estate, 
-            commodities, and private equity, we eliminate intermediaries, reduce costs, and 
-            open up premium investment opportunities to a global audience.
+          <h2 className="about-heading">What this project is</h2>
+          <p className="about-text">
+            A working testnet implementation of compliant RWA tokens on two chains: an ERC-20 token that implements
+            ERC-7943 on Ethereum, and an SPL Token-2022 mint with a compliance transfer hook on Solana. Both use the
+            same idea: an investor proves eligibility once with a zero-knowledge proof, and the token checks that status
+            on every transfer.
           </p>
-          <p style={{ color: 'var(--text-secondary)', lineHeight: '1.8' }}>
-            Our platform is built on the principles of security, compliance, and decentralization, 
-            ensuring that your investments are safe and verifiable at all times.
+          <p className="about-text">
+            It is not a licensed platform. Legal structuring, custody of the underlying assets and real KYC provider
+            integration are outside its scope. See the{" "}
+            <a href={LINKS.limitations} target="_blank" rel="noopener noreferrer">known limitations</a>.
           </p>
         </div>
-        <div style={{ background: 'var(--surface-card)', borderRadius: 'var(--radius-xl)', padding: '3rem', border: '1px solid var(--border-light)' }}>
-          <h3 style={{ fontSize: '1.5rem', color: 'var(--navy)', marginBottom: '2rem' }}>Core Values</h3>
-          <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <li style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '1.5rem' }}>⚖️</span>
-              <div>
-                <strong style={{ display: 'block', color: 'var(--navy)' }}>Transparency</strong>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)' }}>Every transaction is logged on the immutable ledger.</span>
-              </div>
-            </li>
-            <li style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '1.5rem' }}>🛡️</span>
-              <div>
-                <strong style={{ display: 'block', color: 'var(--navy)' }}>Security</strong>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)' }}>Institutional-grade custody and encryption.</span>
-              </div>
-            </li>
-            <li style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '1.5rem' }}>💧</span>
-              <div>
-                <strong style={{ display: 'block', color: 'var(--navy)' }}>Liquidity</strong>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)' }}>Trade your assets anytime, anywhere in the world.</span>
-              </div>
-            </li>
+        <div className="info-card">
+          <h3>Principles</h3>
+          <ul className="values-list">
+            {VALUES.map((v) => (
+              <li key={v.title}>
+                <span aria-hidden="true">{v.icon}</span>
+                <div>
+                  <strong>{v.title}</strong>
+                  <span>{v.desc}</span>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </section>
 
-      <section className="hp-cta" style={{ marginTop: '6rem' }}>
+      <section className="hp-cta about-cta">
         <div className="hp-cta-left">
-          <div className="hp-cta-orb" style={{ background: 'var(--primary-gradient)' }}></div>
           <div>
-            <h2 className="hp-cta-title">Ready to join the revolution?</h2>
-            <p className="hp-cta-desc">Start your journey into the world of tokenized real-world assets today.</p>
+            <h2 className="hp-cta-title">Read the code</h2>
+            <p className="hp-cta-desc">Everything, including the tests and deployment scripts, is on GitHub.</p>
           </div>
         </div>
         <div className="hp-cta-btn">
-          <Link href="/marketplace" className="hp-btn-primary">Get Started</Link>
+          <a href={LINKS.github} target="_blank" rel="noopener noreferrer" className="hp-btn-primary">View on GitHub</a>
         </div>
       </section>
+
+      <SiteFooter />
     </div>
   );
 }
